@@ -1,4 +1,4 @@
-import { BACKGROUND, BG_BLUE_GUY, BG_WHITE_GUY, BTN_CREDITS, BTN_MULTIPLAYER, BTN_PLAY, BTN_SCORES, LOGO_ARMOR, SFX_CLICK, STREAM_MAIN_MENU } from "./constants.js";
+import { BACKGROUND, BG_BLUE_GUY, BG_WHITE_GUY, BTN_CREDITS, BTN_MULTIPLAYER, BTN_PLAY, BTN_SCORES, LOGO_ARMOR, SFX_CLICK, SHAKE_MAGNITUDE, STREAM_MAIN_MENU, SHAKE_DURATION, FLASH_DURATION } from "./constants.js";
 import { animateWithEasing, animationSprite, setAnimation } from "../../../shared/animation.js";
 import { PLAYER_ONE_PORT, SCREEN_HEIGHT, SCREEN_WIDTH } from "../../../shared/constants.js";
 import Gamepad from '../../../shared/gamepad.js'
@@ -7,18 +7,12 @@ import Easing from "../../../shared/easing.js";
 const buttons = [BTN_PLAY, BTN_MULTIPLAYER, BTN_CREDITS, BTN_SCORES];
 let selectedIndex = 0;
 
-const player = Gamepad.player(PLAYER_ONE_PORT);
-const stick = player.leftStick();
-
 let introAnimationDone = false;
 let flashRequested = false;
 let flashing = false;
 let flashStartTime = 0;
-const flashDuration = 200;
 let shaking = false;
 let shakeStartTime = 0;
-const shakeDuration = 200;
-const shakeMagnitude = 12;
 let shakeOffsetX = 0;
 let shakeOffsetY = 0;
 
@@ -62,25 +56,27 @@ function drawButtons() {
 }
 
 function handleInput() {
-    if (player.justPressed(Pads.CROSS) && !SFX_CLICK.playing()) {
+    const stick = Gamepad.player(PLAYER_ONE_PORT).leftStick();
+
+    if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.CROSS) && !SFX_CLICK.playing()) {
         SFX_CLICK.play();
     }
 
-    if (player.justPressed(Pads.UP) || (stick.y < -0.5 && player.justPressed(Pads.L_STICK_UP))) {
+    if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.UP) || (stick.y < -0.5 && Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.L_STICK_UP))) {
         if (selectedIndex === 1) selectedIndex = 0;
         else if (selectedIndex === 2 || selectedIndex === 3) selectedIndex = 1;
     }
 
-    if (player.justPressed(Pads.DOWN) || (stick.y > 0.5 && player.justPressed(Pads.L_STICK_DOWN))) {
+    if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.DOWN) || (stick.y > 0.5 && Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.L_STICK_DOWN))) {
         if (selectedIndex === 0) selectedIndex = 1;
         else if (selectedIndex === 1) selectedIndex = 2;
     }
 
-    if (player.justPressed(Pads.LEFT) || (stick.x < -0.5 && player.justPressed(Pads.L_STICK_LEFT))) {
+    if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.LEFT) || (stick.x < -0.5 && Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.L_STICK_LEFT))) {
         if (selectedIndex === 3) selectedIndex = 2;
     }
 
-    if (player.justPressed(Pads.RIGHT) || (stick.x > 0.5 && player.justPressed(Pads.L_STICK_RIGHT))) {
+    if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.RIGHT) || (stick.x > 0.5 && Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.L_STICK_RIGHT))) {
         if (selectedIndex === 2) selectedIndex = 3;
     }
 }
@@ -96,9 +92,9 @@ function handleEffects() {
 
     if (shaking) {
         const elapsed = Date.now() - shakeStartTime;
-        if (elapsed < shakeDuration) {
-            shakeOffsetX = (Math.random() - 0.5) * 2 * shakeMagnitude;
-            shakeOffsetY = (Math.random() - 0.5) * 2 * shakeMagnitude;
+        if (elapsed < SHAKE_DURATION) {
+            shakeOffsetX = (Math.random() - 0.5) * 2 * SHAKE_MAGNITUDE;
+            shakeOffsetY = (Math.random() - 0.5) * 2 * SHAKE_MAGNITUDE;
         } else {
             shaking = false;
             shakeOffsetX = 0;
@@ -112,10 +108,10 @@ function drawEffects() {
         const elapsed = Date.now() - flashStartTime;
         let alpha = 0;
 
-        if (elapsed < flashDuration) {
-            alpha = (elapsed / flashDuration) * 180;
-        } else if (elapsed < flashDuration * 2) {
-            alpha = (1 - ((elapsed - flashDuration) / flashDuration)) * 180;
+        if (elapsed < FLASH_DURATION) {
+            alpha = (elapsed / FLASH_DURATION) * 180;
+        } else if (elapsed < FLASH_DURATION * 2) {
+            alpha = (1 - ((elapsed - FLASH_DURATION) / FLASH_DURATION)) * 180;
         } else {
             flashing = false;
         }

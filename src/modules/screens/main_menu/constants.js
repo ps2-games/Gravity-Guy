@@ -117,6 +117,10 @@ BTN_CREDITS.animations = {
     },
 }
 
+const FLASH_DURATION = 200;
+const SHAKE_DURATION = 200;
+const SHAKE_MAGNITUDE = 12;
+
 export {
     SFX_CLICK,
     STREAM_MAIN_MENU,
@@ -128,5 +132,8 @@ export {
     BTN_PLAY,
     BTN_SCORES,
     LOGO_ARMOR,
+    FLASH_DURATION,
+    SHAKE_DURATION,
+    SHAKE_MAGNITUDE,
 
 }
