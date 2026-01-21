@@ -6,18 +6,18 @@ STREAM_MAIN_MENU.loop = true;
 
 const SFX_CLICK = Assets.sound("./assets/sound/click.adp")
 
-const BACKGROUND = new Image("./assets/img/background.png");
+const BACKGROUND = new Image("./assets/img/ui/background.png");
 BACKGROUND.width = SCREEN_WIDTH;
 BACKGROUND.height = SCREEN_HEIGHT
 
-const LOGO_ARMOR = new Image("./assets/img/armor_logo.png")
+const LOGO_ARMOR = new Image("./assets/img/ui/armor_logo.png")
 
-const BG_BLUE_GUY = new Image("./assets/img/blue_guy.png");
+const BG_BLUE_GUY = new Image("./assets/img/ui/blue_guy.png");
 BG_BLUE_GUY.x = -BG_BLUE_GUY.width
-const BG_WHITE_GUY = new Image("./assets/img/white_guy.png");
+const BG_WHITE_GUY = new Image("./assets/img/ui/white_guy.png");
 BG_WHITE_GUY.x = SCREEN_WIDTH
 
-const BTN_PLAY = new Image("./assets/img/btn_play.png");
+const BTN_PLAY = new Image("./assets/img/ui/btn_play.png");
 BTN_PLAY.width = 250;
 BTN_PLAY.height = 100;
 BTN_PLAY.frameWidth = 250;
@@ -42,7 +42,7 @@ BTN_PLAY.animations = {
     },
 }
 
-const BTN_MULTIPLAYER = new Image("./assets/img/btn_multiplayer.png");
+const BTN_MULTIPLAYER = new Image("./assets/img/ui/btn_multiplayer.png");
 BTN_MULTIPLAYER.width = 232;
 BTN_MULTIPLAYER.height = 73;
 BTN_MULTIPLAYER.frameWidth = 232;
@@ -67,7 +67,7 @@ BTN_MULTIPLAYER.animations = {
     },
 }
 
-const BTN_SCORES = new Image("./assets/img/btn_scores.png");
+const BTN_SCORES = new Image("./assets/img/ui/btn_scores.png");
 BTN_SCORES.width = 145;
 BTN_SCORES.height = 34;
 BTN_SCORES.frameWidth = 145;
@@ -92,7 +92,7 @@ BTN_SCORES.animations = {
     },
 }
 
-const BTN_CREDITS = new Image("./assets/img/btn_credits.png");
+const BTN_CREDITS = new Image("./assets/img/ui/btn_credits.png");
 BTN_CREDITS.width = 145;
 BTN_CREDITS.height = 34;
 BTN_CREDITS.frameWidth = 145;

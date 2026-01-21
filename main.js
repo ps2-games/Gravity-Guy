@@ -1,3 +1,4 @@
+import GAME_LOOP from './src/modules/screens/game/game.js';
 import MAIN_MENU_LOOP from './src/modules/screens/main_menu/menu.js';
 import Gamepad from './src/shared/gamepad.js'
 
@@ -24,7 +25,8 @@ while (true) {
     //     MAIN_MENU_LOOP();
     // }
 
-    MAIN_MENU_LOOP();
+    // MAIN_MENU_LOOP();
+    GAME_LOOP();
 
     Screen.flip();
 }
