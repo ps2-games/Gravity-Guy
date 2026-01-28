@@ -27,7 +27,7 @@ export default class Player {
         this.spritesheet.starty = 0;
         this.spritesheet.endy = 77;
         this.spritesheet.loop = true;
-        this.spritesheet.fps = 12;
+        this.spritesheet.fps = 16;
         this.spritesheet.framesPerRow = 9;
         this.spritesheet.frameWidth = 65;
         this.spritesheet.frameHeight = 77;

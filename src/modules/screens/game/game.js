@@ -49,7 +49,6 @@ function createCollider() {
 }
 
 const player = new Player({ PLAYER_PORT: 0 })
-const player2 = new Player({ PLAYER_PORT: 1 })
 
 function GAME_LOOP(deltaTime) {
     if (!STREAM_GAME.playing()) {
@@ -67,7 +66,6 @@ function GAME_LOOP(deltaTime) {
     }
 
     player.update(deltaTime);
-    player2.update(deltaTime)
 
     Collision.check();
 
