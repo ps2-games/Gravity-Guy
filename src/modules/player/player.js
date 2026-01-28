@@ -46,19 +46,6 @@ export default class Player {
         };
     }
 
-    playDustEffect() {
-        if (this.dustEffect.playing) return;
-
-        const bounds = this.getBounds();
-
-        this.dustEffect.playing = true;
-        this.dustEffect.currentFrame = 0;
-        this.dustEffect.frameTimer = 0;
-        this.dustEffect.x = this.movement.position.x;
-        this.dustEffect.y = this.movement.facingUp ? bounds.top : bounds.bottom;
-        this.dustEffect.facingUp = this.movement.facingUp;
-    }
-
     _initAnimations() {
         this.spritesheet.startx = 0;
         this.spritesheet.endx = 65;
@@ -114,6 +101,19 @@ export default class Player {
         });
     }
 
+    playDustEffect() {
+        if (this.dustEffect.playing) return;
+
+        const bounds = this.getBounds();
+
+        this.dustEffect.playing = true;
+        this.dustEffect.currentFrame = 0;
+        this.dustEffect.frameTimer = 0;
+        this.dustEffect.x = this.movement.position.x;
+        this.dustEffect.y = this.movement.facingUp ? bounds.top : bounds.bottom;
+        this.dustEffect.facingUp = this.movement.facingUp;
+    }
+
     getBounds() {
         this._bounds.left = this.movement.position.x - 20;
         this._bounds.top = this.movement.position.y + 12;
@@ -123,7 +123,18 @@ export default class Player {
         return this._bounds;
     }
 
-    updateAnimation() {
+    updateAnimation(deltaTime) {
+        if (this.dustEffect.playing) {
+            this.dustEffect.deltaTime = deltaTime;
+            animationSprite(this.dustEffect);
+        }
+
+        this.spritesheet.deltaTime = deltaTime;
+        animationSprite(this.spritesheet);
+        this.spritesheet.facingUp = this.movement.facingUp;
+    }
+
+    handleAnimation() {
         if (!this.movement.canMove) setAnimation(this.spritesheet, PLAYER_ANIMATION.DEAD);
         else if (this.movement.isWallSliding()) setAnimation(this.spritesheet, PLAYER_ANIMATION.WALK_SLIDE);
         else if (this.movement.isFalling()) setAnimation(this.spritesheet, PLAYER_ANIMATION.FALL);
@@ -160,13 +171,11 @@ export default class Player {
         if (this.shouldRemove()) return;
 
         if (this.dustEffect.playing) {
-            const y = this.dustEffect.facingUp
-                ? this.dustEffect.y
-                : this.dustEffect.y - this.dustEffect.frameHeight;
-
             this.dustEffect.draw(
                 Math.fround(this.dustEffect.x - (this.dustEffect.frameWidth * 1.25)),
-                y
+                this.dustEffect.facingUp
+                    ? this.dustEffect.y
+                    : this.dustEffect.y - this.dustEffect.frameHeight
             );
         }
 
@@ -187,17 +196,9 @@ export default class Player {
             this.movement.checkGroundCollision(this.colliderId, bounds);
         }
 
-        if (this.dustEffect.playing) {
-            this.dustEffect.deltaTime = deltaTime;
-            animationSprite(this.dustEffect);
-        }
-
-        this.spritesheet.deltaTime = deltaTime;
-        animationSprite(this.spritesheet);
-        this.spritesheet.facingUp = this.movement.facingUp;
-
+        this.updateAnimation(deltaTime);
         this.updateCollider(bounds);
-        this.updateAnimation();
+        this.handleAnimation();
 
         this.draw();
     }
@@ -211,6 +212,7 @@ export default class Player {
         this.spritesheet = null;
         this.movement = null;
         this.debugColor = null;
+        this.dustEffect = null;
 
         Assets.free(`${ASSETS_PATH.SPRITES}/${this.PLAYER_PORT}.png`);
         Assets.free(`${ASSETS_PATH.SPRITES}/dust.png`);

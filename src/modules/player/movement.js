@@ -4,17 +4,16 @@ import Collision from "../../shared/collision.js";
 
 export default class Movement2D {
     constructor(options) {
-        const { initialX, initialY, playerPort, onFlip } = options;
-        this.position = { x: initialX || 0, y: initialY || 0 }
+        this.position = { x: options.initialX || 0, y: options.initialY || 0 }
         this.velocity = { x: 0, y: 0 }
         this.facingUp = true;
         this.canMove = true;
         this.onGround = false;
         this.touchingWall = false;
         this.wallDirection = 0;
-        this.onFlip = onFlip;
+        this.onFlip = options.onFlip;
 
-        this.PLAYER_PORT = playerPort;
+        this.PLAYER_PORT = options.playerPort;
     }
 
     isFalling = () => this.facingUp ? this.velocity.y < 0 : this.velocity.y > 0;
