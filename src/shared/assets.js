@@ -58,7 +58,7 @@ export default class Assets {
             const entry = cache.get(path);
             if (entry && --entry.ref <= 0) {
 
-                if (entry.asset.locked()) entry.asset.unlock();
+                if (entry.asset.locked && entry.asset.locked()) entry.asset.unlock();
 
                 entry.asset.free();
                 cache.delete(path);
