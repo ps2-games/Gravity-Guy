@@ -289,6 +289,7 @@ export default class GameScreen extends ScreenBase {
         Collision.clear()
         this.player.destroy();
         this.player = null;
+        this.isPaused = null;
 
         this._freeAssets();
     }
