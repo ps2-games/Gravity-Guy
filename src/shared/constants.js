@@ -4,7 +4,8 @@ const ASSETS_PATH = Object.freeze({
     PARALLAX: "./assets/img/parallax",
     SPRITES: "./assets/img/sprites",
     SOUNDS: "./assets/sound",
-    UI: "./assets/img/ui"
+    UI: "./assets/img/ui",
+    TILES: "./assets/img/tiles"
 })
 const GAME_STATE = Object.freeze({
     MAIN_MENU: 'MAIN_MENU',
@@ -28,7 +29,7 @@ const PLAYER_ANIMATION = Object.freeze({
 const PLAYER_MOVEMENT = Object.freeze({
     MAX_Y_VELOCITY: 320.0,
     DEFAULT_GRAVITY: 7.0,
-    DEFAULT_SPEED: 108
+    DEFAULT_SPEED: 43.9
 })
 
 export {

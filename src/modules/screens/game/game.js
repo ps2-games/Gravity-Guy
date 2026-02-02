@@ -6,13 +6,15 @@ import Gamepad from "../../../shared/gamepad.js"
 import ScreenBase from "../../../shared/screenBase.js"
 import StateManager from "../../../shared/stateManager.js"
 import Player from "../../player/player.js"
-
+import startMission from "../map/mapScreen.js"
+import Camera from "../../../shared/camera.js"
 export default class GameScreen extends ScreenBase {
     constructor() {
         super()
         this.player = null;
         this.isPaused = false;
         this.selectedIndex = 0;
+        
     }
 
     init() {
@@ -256,6 +258,15 @@ export default class GameScreen extends ScreenBase {
 
         this.drawParallaxBottom(parallaxDeltaTime);
         this.drawParallaxTop(parallaxDeltaTime);
+
+        if (!this.missionStarted) {
+            const texture = new Image("assets/img/tiles/texture-0.png");
+            const texture1 = new Image("assets/img/tiles/texture-1.png");
+            const texture2 = new Image("assets/img/tiles/texture-2.png");
+            startMission.init(texture, texture1, texture2);
+            this.missionStarted = true;
+        }
+        startMission.draw();
 
         if (this.player) this.player.draw();
 
