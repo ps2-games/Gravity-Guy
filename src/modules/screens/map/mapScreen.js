@@ -8,11 +8,11 @@ const startMission = {
 
         const pillar = new Map(3, 323 , 0, 4, 41, 223, texture);
         const rock = new Map(224.9, 126.4, 237, 91, 40, 44, texture2);
-        const rock1 = new Map(224.1, 120.4, 237, 91, 40, 44, texture2);
+       
 
 
 
-        this.objects.push(pillar, rock, rock1);
+        this.objects.push(pillar, rock);
     },
 
     draw() {

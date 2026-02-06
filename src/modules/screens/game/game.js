@@ -7,14 +7,17 @@ import ScreenBase from "../../../shared/screenBase.js"
 import StateManager from "../../../shared/stateManager.js"
 import Player from "../../player/player.js"
 import startMission from "../map/mapScreen.js"
-import Camera from "../../../shared/camera.js"
+import Score from "./score.js"
+
 export default class GameScreen extends ScreenBase {
     constructor() {
         super()
         this.player = null;
         this.isPaused = false;
         this.selectedIndex = 0;
-        
+        this.missionStarted = false;
+        this.isSoundOn = true;
+        this.effectActive = false;
     }
 
     init() {
@@ -26,6 +29,11 @@ export default class GameScreen extends ScreenBase {
         this._initColliders();
         this._initAssets();
         this.player = new Player({ PLAYER_PORT: PLAYER_ONE_PORT, initialX: 50, initialY: SCREEN_HEIGHT - 120 })
+        this.score = new Score(589, -2);
+        this.score.start();
+        this.font = new Font('assets/font/ethno.ttf');
+
+
 
         if (!this.STREAM_GAME.playing()) {
             this.STREAM_GAME.play();
@@ -60,6 +68,9 @@ export default class GameScreen extends ScreenBase {
     }
 
     _initAssets() {
+
+        this.HUD_SCORE = Assets.image(`${ASSETS_PATH.SCORE}/HUD.png`);
+
         this.STREAM_GAME = Assets.sound(`${ASSETS_PATH.SOUNDS}/game.ogg`)
         this.STREAM_GAME.loop = true;
 
@@ -170,6 +181,57 @@ export default class GameScreen extends ScreenBase {
                 }
             }
         })
+
+        this.BTN_SUBMIT_SCORE = Assets.image(`${ASSETS_PATH.SCORE}/submit.png`, {
+            optimize: true,
+            animConfig: {
+                width: 240,
+                frameWidth: 115,
+                startx: 0,
+                endx: 115,
+                height: 32,
+                frameHeight: 32,
+                fps: 0,
+                starty: 0,
+                endy: 32,
+                totalFrames: 2,
+                framesPerRow: 2,
+                x: 523,
+                y: 27,
+                animations: {
+                    normal: { start: 0, end: 0 },
+                    hover: { start: 1, end: 1 }
+                }
+            }
+        });
+
+        this.BTN_VOLUME = Assets.image(`${ASSETS_PATH.SCORE}/btn_volume.png`, {
+            optimize: true,
+            animConfig: {
+                width: 117,
+                frameWidth: 39,
+                startx: 0,
+                endx: 39,
+                height: 27,
+                frameHeight: 27,
+                fps: 0,
+                starty: 0,
+                endy: 27,
+                totalFrames: 3,
+                framesPerRow: 3,
+                x: 71,
+                y: 1,
+                animations: {
+                    off: { start: 1, end: 1 },
+                    on: { start: 2, end: 2 },
+                    on_off: { start: 0, end: 0 }
+                }
+            }
+        });
+        this.BTN_VOLUME.currentFrame = 2
+
+        this.BTN_PAUSE = Assets.image(`${ASSETS_PATH.SCORE}/pause.png`)
+
     }
 
     drawParallaxTop(deltaTime) {
@@ -191,14 +253,38 @@ export default class GameScreen extends ScreenBase {
 
         if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.START)) {
             this.isPaused = !this.isPaused;
-            this.STREAM_GAME.playing() ? this.STREAM_GAME.pause() : this.STREAM_GAME.play();
+
 
             if (this.isPaused) {
+                if (this.STREAM_GAME.playing()) {
+                    this.STREAM_GAME.pause();
+                    this.effectActive = true;
+                    
+                }
                 this.selectedIndex = 0;
+            } else {
+                if (this.isSoundOn && !this.STREAM_GAME.playing()) {
+                    this.STREAM_GAME.play()
+                    this.effectActive = false;
+                }
             }
+            
+
         }
 
+        if (Gamepad.player(PLAYER_ONE_PORT).pressed(Pads.R2)) setAnimation(this.BTN_SUBMIT_SCORE, "hover");
+        else setAnimation(this.BTN_SUBMIT_SCORE, "normal");
+
+        if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.SQUARE)) {
+            this.volumeAnim = 30;
+            this.isSoundOn = !this.isSoundOn;
+            this.SFX_CLICK.play();
+        }
+
+
+
         if (this.isPaused) {
+
             if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.UP) && this.selectedIndex === 1) {
                 setAnimation(this.BTN_RESUME_PAUSE, "hover");
                 setAnimation(this.BTN_RETURN_MENU, "normal");
@@ -208,8 +294,10 @@ export default class GameScreen extends ScreenBase {
             if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.DOWN) && this.selectedIndex === 0) {
                 setAnimation(this.BTN_RETURN_MENU, "hover");
                 setAnimation(this.BTN_RESUME_PAUSE, "normal");
+
                 this.selectedIndex = 1;
             }
+
 
             if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.CROSS)) {
                 if (this.selectedIndex === 0) {
@@ -236,6 +324,8 @@ export default class GameScreen extends ScreenBase {
         this.BTN_RETURN_MENU.draw(this.BTN_RETURN_MENU.x, this.BTN_RETURN_MENU.y);
     }
 
+
+
     update(deltaTime) {
         if (!this.isActive) return;
 
@@ -246,11 +336,31 @@ export default class GameScreen extends ScreenBase {
                 this.player.update(deltaTime);
             }
             Collision.check();
+
+            this.score.update(deltaTime);
+            this._volumeConfig();
+            this._effectButtonPause(deltaTime);
         }
+    }
+
+    _effectButtonPause(deltaTime){
+
+        if(!this.effectActive) return;
+
+        this.effectTimer += deltaTime;
+
+        if(this.effectTimer >= this.EFFECT_DURATION){
+
+            this.effectActive = false;
+            this.effectTimer = 0
+
+        }
+
     }
 
     render() {
         if (!this.isActive) return;
+
 
         this.BACKGROUND.draw(0, 0);
 
@@ -267,13 +377,60 @@ export default class GameScreen extends ScreenBase {
             this.missionStarted = true;
         }
         startMission.draw();
-
         if (this.player) this.player.draw();
+        this.HUD_SCORE.draw(0, 0);
+        this.score.draw(this.font);
+
+        animationSprite(this.BTN_SUBMIT_SCORE);
+        this.BTN_SUBMIT_SCORE.draw(this.BTN_SUBMIT_SCORE.x, this.BTN_SUBMIT_SCORE.y);
+
+        animationSprite(this.BTN_VOLUME);
+        this.BTN_VOLUME.draw(this.BTN_VOLUME.x, this.BTN_VOLUME.y);
+
+        if(this.effectActive) this.BTN_PAUSE.draw(0, 0)
 
         if (this.isPaused) this.drawPauseUI();
 
+
         Collision.renderDebug();
     }
+
+    _volumeConfig() {
+
+        if (this.volumeAnim > 0) {
+
+            this.volumeAnim--;
+
+            let frame;
+
+            if (this.isSoundOn) {
+
+                frame = Math.floor((30 - this.volumeAnim) / 10);
+
+            } else {
+
+                frame = 2 - Math.floor((30 - this.volumeAnim) / 10);
+
+            }
+
+            const names = ['off', 'on_off', 'on'];
+            setAnimation(this.BTN_VOLUME, names[frame]);
+
+            if (this.volumeAnim === 0) {
+
+                if (this.isSoundOn) {
+
+                    if (!this.STREAM_GAME.playing()) this.STREAM_GAME.play();
+
+                } else {
+
+                    if (this.STREAM_GAME.playing()) this.STREAM_GAME.pause();
+
+                }
+            }
+        }
+    }
+
 
     _freeAssets() {
         Assets.free(`${ASSETS_PATH.SOUNDS}/game.ogg`)
@@ -305,3 +462,4 @@ export default class GameScreen extends ScreenBase {
         this._freeAssets();
     }
 }
+

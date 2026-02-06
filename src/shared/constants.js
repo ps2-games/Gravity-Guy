@@ -5,7 +5,8 @@ const ASSETS_PATH = Object.freeze({
     SPRITES: "./assets/img/sprites",
     SOUNDS: "./assets/sound",
     UI: "./assets/img/ui",
-    TILES: "./assets/img/tiles"
+    TILES: "./assets/img/tiles",
+    SCORE: "./assets/img/score"
 })
 const GAME_STATE = Object.freeze({
     MAIN_MENU: 'MAIN_MENU',

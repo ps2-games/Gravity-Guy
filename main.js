@@ -5,6 +5,8 @@ import { GAME_STATE } from './src/shared/constants.js';
 import Gamepad from './src/shared/gamepad.js'
 import StateManager from './src/shared/stateManager.js';
 
+
+
 Screen.setParam(Screen.DEPTH_TEST_ENABLE, false);
 
 function initializeGame() {
@@ -35,6 +37,7 @@ function gameLoop() {
         Gamepad.update();
 
         StateManager.update(deltaTime);
+        
         StateManager.render();
 
         Screen.flip();
