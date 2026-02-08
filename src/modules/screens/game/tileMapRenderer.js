@@ -36,7 +36,7 @@ export default class TileMapRenderer {
 
         if (this.mapData.visualInfo && Array.isArray(this.mapData.visualInfo)) {
             this.mapData.visualInfo.forEach((tile, index) => {
-                if (tile.imageId) {
+                if (tile.imageId || tile.animId) {
                     this.allTiles.push({
                         ...tile,
                         layer: 'back',
@@ -48,7 +48,7 @@ export default class TileMapRenderer {
 
         if (this.mapData.frontVisualInfo && Array.isArray(this.mapData.frontVisualInfo)) {
             this.mapData.frontVisualInfo.forEach((tile, index) => {
-                if (tile.imageId) {
+                if (tile.imageId || tile.animId) {
                     this.allTiles.push({
                         ...tile,
                         layer: 'front',
@@ -58,7 +58,7 @@ export default class TileMapRenderer {
             });
         }
 
-        this.allTiles.sort((a, b) => (b.depth || 0) - (a.depth || 0));
+        this.allTiles.sort((a, b) => (a.depth || 0) - (b.depth || 0));
     }
 
     _convertCoordinates() {
@@ -69,7 +69,7 @@ export default class TileMapRenderer {
         const Y_OFFSET = 36;
 
         this.allTiles.forEach(tileInfo => {
-            if (!tileInfo.imageId) return;
+            if (!tileInfo.imageId && !tileInfo.animId) return;
 
             tileInfo.convertedX = tileInfo.posX * SCALE_FACTOR;
 
@@ -90,7 +90,7 @@ export default class TileMapRenderer {
         this.spatialGrid = new Map();
 
         this.allTiles.forEach((tileInfo, index) => {
-            if (!tileInfo.imageId) return;
+            if (!tileInfo.imageId && !tileInfo.animId) return;
 
             const cellX = Math.floor(tileInfo.convertedX / CELL_SIZE);
             const cellY = Math.floor(tileInfo.convertedY / CELL_SIZE);
@@ -147,9 +147,9 @@ export default class TileMapRenderer {
         potentialTiles.forEach(tileInfo => {
             if (!tileInfo.imageId) return;
 
-            const imagePath = this._getImagePath(tileInfo.imageId);
+            const imagePath = this._getImagePath(tileInfo.imageId || tileInfo.animId);
 
-            let tileDim = this.tileDimensions.get(tileInfo.imageId);
+            let tileDim = this.tileDimensions.get(tileInfo.imageId || tileInfo.animId);
 
             if (!tileDim) {
                 const asset = Assets.image(imagePath);
@@ -157,7 +157,7 @@ export default class TileMapRenderer {
                     width: asset.width || 64,
                     height: asset.height || 64
                 };
-                this.tileDimensions.set(tileInfo.imageId, tileDim);
+                this.tileDimensions.set(tileInfo.imageId || tileInfo.animId, tileDim);
             }
 
             const isVisible = (
@@ -182,7 +182,7 @@ export default class TileMapRenderer {
                 this.loadedAssets.get(imagePath).refCount++;
 
                 newVisibleTiles.push({
-                    imageId: tileInfo.imageId,
+                    imageId: tileInfo.imageId || tileInfo.animId,
                     imagePath: imagePath,
                     posX: tileInfo.convertedX,
                     posY: tileInfo.convertedY,
@@ -201,7 +201,7 @@ export default class TileMapRenderer {
             }
         });
 
-        newVisibleTiles.sort((a, b) => (b.depth || 0) - (a.depth || 0));
+        newVisibleTiles.sort((a, b) => (a.depth || 0) - (b.depth || 0));
 
         this.visibleTiles = newVisibleTiles;
         this.lastCameraX = cameraX;
