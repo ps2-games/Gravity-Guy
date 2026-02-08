@@ -1,0 +1,42 @@
+{
+    "collisionInfo": [
+        {
+            "posX": 7,
+            "posY": 3,
+            "type": 1
+        },
+        {
+            "posX": 8,
+            "posY": 3,
+            "type": 1
+        },
+        {
+            "posX": 11,
+            "posY": 3,
+            "type": 1
+        }
+    ],
+    "visualInfo": [
+        {
+            "imageId": "BuildingWallBlue001",
+            "posX": 0,
+            "posY": 5,
+            "depth": 1994,
+            "scaleY": 1.78167724609375
+        },
+        {
+            "imageId": "BuildingWallBlue001",
+            "posX": 250,
+            "posY": 250,
+            "depth": 1993,
+            "scaleY": 1.072723388671875
+        },
+        {
+            "imageId": "BuildingWallBlue001",
+            "posX": 500,
+            "posY": 300,
+            "depth": 1992,
+            "scaleY": 1.072723388671875
+        }
+    ]
+}

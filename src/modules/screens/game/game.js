@@ -6,15 +6,16 @@ import Gamepad from "../../../shared/gamepad.js"
 import ScreenBase from "../../../shared/screenBase.js"
 import StateManager from "../../../shared/stateManager.js"
 import Player from "../../player/player.js"
-import startMission from "../map/mapScreen.js"
-import Camera from "../../../shared/camera.js"
+import TileMapRenderer from "./tileMapRenderer.js"
+
 export default class GameScreen extends ScreenBase {
     constructor() {
         super()
         this.player = null;
         this.isPaused = false;
         this.selectedIndex = 0;
-        
+        this.cameraX = 0;
+        this.cameraY = 0;
     }
 
     init() {
@@ -27,12 +28,18 @@ export default class GameScreen extends ScreenBase {
         this._initAssets();
         this.player = new Player({ PLAYER_PORT: PLAYER_ONE_PORT, initialX: 50, initialY: SCREEN_HEIGHT - 120 })
 
+        const mapData = JSON.parse(std.loadFile(`${ASSETS_PATH.MAPS}/sp1.json`));
+        this.tileMapRenderer = new TileMapRenderer(mapData, SCREEN_WIDTH, SCREEN_HEIGHT);
+
         if (!this.STREAM_GAME.playing()) {
             this.STREAM_GAME.play();
         }
 
         setAnimation(this.BTN_RESUME_PAUSE, "hover");
         setAnimation(this.BTN_RETURN_MENU, "normal");
+        
+        this.cameraX = 0;
+        this.cameraY = 0;
     }
 
     _initColliders() {
@@ -189,6 +196,11 @@ export default class GameScreen extends ScreenBase {
             Collision.toggleDebug();
         }
 
+        if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.L1)) {
+            const stats = this.tileMapRenderer.getStats();
+            console.log('TileMapRenderer Stats:', stats);
+        }
+
         if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.START)) {
             this.isPaused = !this.isPaused;
             this.STREAM_GAME.playing() ? this.STREAM_GAME.pause() : this.STREAM_GAME.play();
@@ -236,6 +248,13 @@ export default class GameScreen extends ScreenBase {
         this.BTN_RETURN_MENU.draw(this.BTN_RETURN_MENU.x, this.BTN_RETURN_MENU.y);
     }
 
+    updateCamera() {
+        if (this.player) {
+            this.cameraX = Math.max(0, this.player.x - SCREEN_WIDTH / 2);
+            this.cameraY = Math.max(0, this.player.y - SCREEN_HEIGHT / 2);
+        }
+    }
+
     update(deltaTime) {
         if (!this.isActive) return;
 
@@ -244,6 +263,10 @@ export default class GameScreen extends ScreenBase {
         if (!this.isPaused) {
             if (this.player) {
                 this.player.update(deltaTime);
+                
+                this.updateCamera();
+                
+                this.tileMapRenderer.update(0, 0);
             }
             Collision.check();
         }
@@ -259,15 +282,10 @@ export default class GameScreen extends ScreenBase {
         this.drawParallaxBottom(parallaxDeltaTime);
         this.drawParallaxTop(parallaxDeltaTime);
 
-        if (!this.missionStarted) {
-            const texture = new Image("assets/img/tiles/texture-0.png");
-            const texture1 = new Image("assets/img/tiles/texture-1.png");
-            const texture2 = new Image("assets/img/tiles/texture-2.png");
-            startMission.init(texture, texture1, texture2);
-            this.missionStarted = true;
+        if (this.tileMapRenderer) {
+            this.tileMapRenderer.render(0, 0);
         }
-        startMission.draw();
-
+        
         if (this.player) this.player.draw();
 
         if (this.isPaused) this.drawPauseUI();
@@ -301,6 +319,11 @@ export default class GameScreen extends ScreenBase {
         this.player.destroy();
         this.player = null;
         this.isPaused = null;
+
+        if (this.tileMapRenderer) {
+            this.tileMapRenderer.free();
+            this.tileMapRenderer = null;
+        }
 
         this._freeAssets();
     }
