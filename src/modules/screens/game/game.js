@@ -26,7 +26,7 @@ export default class GameScreen extends ScreenBase {
         super.onEnter(fromState);
         this._initColliders();
         this._initAssets();
-        this.player = new Player({ PLAYER_PORT: PLAYER_ONE_PORT, initialX: 50, initialY: SCREEN_HEIGHT - 120 })
+        this.player = new Player({ PLAYER_PORT: PLAYER_ONE_PORT, initialX: 50, initialY: 50 })
 
         const mapData = JSON.parse(std.loadFile(`${ASSETS_PATH.MAPS}/sp1.json`));
         this.tileMapRenderer = new TileMapRenderer(mapData, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -198,7 +198,7 @@ export default class GameScreen extends ScreenBase {
 
         if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.L1)) {
             const stats = this.tileMapRenderer.getStats();
-            console.log('TileMapRenderer Stats:', stats);
+            console.log('TileMapRenderer Stats:', JSON.stringify(stats, null, 2));
         }
 
         if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.START)) {

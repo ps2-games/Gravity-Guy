@@ -11,200 +11,209 @@ export default class TileMapRenderer {
         this.FLASH_Y_OFFSET = 36;
 
         this.scaleY = viewportHeight / this.FLASH_HEIGHT;
-
         this.visibleTiles = [];
-
         this.loadedAssets = new Map();
-
         this.BUFFER_ZONE = 100;
 
-        this.lastCameraX = 0;
-        this.lastCameraY = 0;
-
+        this.lastCameraX = -999999;
+        this.lastCameraY = -999999;
+        
         this.tileDimensions = new Map();
+        this._pathCache = new Map();
 
         this._mergeVisualLayers();
-
         this._convertCoordinates();
-
         this._buildSpatialIndex();
     }
 
     _mergeVisualLayers() {
         this.allTiles = [];
-
+        
         if (this.mapData.visualInfo && Array.isArray(this.mapData.visualInfo)) {
-            this.mapData.visualInfo.forEach((tile, index) => {
+            for (let i = 0; i < this.mapData.visualInfo.length; i++) {
+                const tile = this.mapData.visualInfo[i];
                 if (tile.imageId || tile.animId) {
                     this.allTiles.push({
-                        ...tile,
+                        id: tile.imageId || tile.animId,
+                        posX: tile.posX,
+                        posY: tile.posY,
+                        depth: tile.depth || 0,
                         layer: 'back',
-                        originalIndex: index
+                        originalIndex: i
                     });
                 }
-            });
+            }
         }
 
         if (this.mapData.frontVisualInfo && Array.isArray(this.mapData.frontVisualInfo)) {
-            this.mapData.frontVisualInfo.forEach((tile, index) => {
+            for (let i = 0; i < this.mapData.frontVisualInfo.length; i++) {
+                const tile = this.mapData.frontVisualInfo[i];
                 if (tile.imageId || tile.animId) {
                     this.allTiles.push({
-                        ...tile,
+                        id: tile.imageId || tile.animId,
+                        posX: tile.posX,
+                        posY: tile.posY,
+                        depth: tile.depth || 0,
                         layer: 'front',
-                        originalIndex: index
+                        originalIndex: i
                     });
                 }
-            });
+            }
         }
 
         this.allTiles.sort((a, b) => (a.depth || 0) - (b.depth || 0));
     }
 
     _convertCoordinates() {
-        let minY = Infinity, maxY = -Infinity;
-
         const GROUND_LEVEL = 425;
-        const SCALE_FACTOR = 0.641509;
+        const SCALE_FACTOR = 0.641509f;
         const Y_OFFSET = 36;
+        const PS2_Y_OFFSET = this.viewportHeight === 448 ? 30 : 0;
 
-        this.allTiles.forEach(tileInfo => {
-            if (!tileInfo.imageId && !tileInfo.animId) return;
-
-            tileInfo.convertedX = tileInfo.posX * SCALE_FACTOR;
-
-            const flashY = GROUND_LEVEL - (tileInfo.posY * SCALE_FACTOR) + Y_OFFSET;
-
-            tileInfo.convertedY = flashY * this.scaleY;
-
-            const PS2_Y_OFFSET = this.viewportHeight === 448 ? 30 : 0;
-            tileInfo.convertedY += PS2_Y_OFFSET;
-
-            minY = Math.min(minY, tileInfo.convertedY);
-            maxY = Math.max(maxY, tileInfo.convertedY);
-        });
+        for (let i = 0; i < this.allTiles.length; i++) {
+            const tile = this.allTiles[i];
+            
+            tile.convertedX = tile.posX * SCALE_FACTOR;
+            const flashY = GROUND_LEVEL - (tile.posY * SCALE_FACTOR) + Y_OFFSET;
+            tile.convertedY = (flashY * this.scaleY) + PS2_Y_OFFSET;
+            
+            delete tile.posX;
+            delete tile.posY;
+        }
     }
 
     _buildSpatialIndex() {
         const CELL_SIZE = 256;
         this.spatialGrid = new Map();
 
-        this.allTiles.forEach((tileInfo, index) => {
-            if (!tileInfo.imageId && !tileInfo.animId) return;
-
-            const cellX = Math.floor(tileInfo.convertedX / CELL_SIZE);
-            const cellY = Math.floor(tileInfo.convertedY / CELL_SIZE);
+        for (let i = 0; i < this.allTiles.length; i++) {
+            const tile = this.allTiles[i];
+            const cellX = Math.floor(tile.convertedX / CELL_SIZE);
+            const cellY = Math.floor(tile.convertedY / CELL_SIZE);
             const cellKey = `${cellX},${cellY}`;
 
             if (!this.spatialGrid.has(cellKey)) {
                 this.spatialGrid.set(cellKey, []);
             }
-
-            this.spatialGrid.get(cellKey).push(index);
-        });
+            this.spatialGrid.get(cellKey).push(i);
+        }
     }
 
-    _getPotentiallyVisibleTiles(minX, maxX, minY, maxY) {
-        const CELL_SIZE = 256;
-        const potentialTiles = [];
-        const seenIndices = new Set();
-
-        const startCellX = Math.floor(minX / CELL_SIZE);
-        const endCellX = Math.floor(maxX / CELL_SIZE);
-        const startCellY = Math.floor(minY / CELL_SIZE);
-        const endCellY = Math.floor(maxY / CELL_SIZE);
-
-        for (let cx = startCellX; cx <= endCellX; cx++) {
-            for (let cy = startCellY; cy <= endCellY; cy++) {
-                const cellKey = `${cx},${cy}`;
-                const cellTiles = this.spatialGrid.get(cellKey);
-
-                if (cellTiles) {
-                    cellTiles.forEach(index => {
-                        if (!seenIndices.has(index)) {
-                            seenIndices.add(index);
-                            potentialTiles.push(this.allTiles[index]);
-                        }
-                    });
-                }
-            }
+    _getImagePath(imageId) {
+        let path = this._pathCache.get(imageId);
+        if (!path) {
+            path = `assets/img/tiles/${imageId}.png`;
+            this._pathCache.set(imageId, path);
         }
-
-        return potentialTiles;
+        return path;
     }
 
     update(cameraX, cameraY) {
+        const camDeltaX = Math.abs(cameraX - this.lastCameraX);
+        const camDeltaY = Math.abs(cameraY - this.lastCameraY);
+        
+        if (camDeltaX < 1 && camDeltaY < 1) {
+            return;
+        }
+
+        this.lastCameraX = cameraX;
+        this.lastCameraY = cameraY;
+
         const minX = cameraX - this.BUFFER_ZONE;
         const maxX = cameraX + this.viewportWidth + this.BUFFER_ZONE;
         const minY = cameraY - this.BUFFER_ZONE;
         const maxY = cameraY + this.viewportHeight + this.BUFFER_ZONE;
 
-        const stillVisible = new Set();
+        const CELL_SIZE = 256;
+        const startCellX = Math.floor(minX / CELL_SIZE);
+        const endCellX = Math.floor(maxX / CELL_SIZE);
+        const startCellY = Math.floor(minY / CELL_SIZE);
+        const endCellY = Math.floor(maxY / CELL_SIZE);
+
         const newVisibleTiles = [];
+        const seenIndices = new Set();
+        const requiredAssets = new Set();
 
-        const potentialTiles = this._getPotentiallyVisibleTiles(minX, maxX, minY, maxY);
+        for (let cx = startCellX; cx <= endCellX; cx++) {
+            for (let cy = startCellY; cy <= endCellY; cy++) {
+                const cellKey = `${cx},${cy}`;
+                const indices = this.spatialGrid.get(cellKey);
+                
+                if (!indices) continue;
 
-        potentialTiles.forEach(tileInfo => {
-            if (!tileInfo.imageId) return;
+                for (let i = 0; i < indices.length; i++) {
+                    const tileIdx = indices[i];
+                    
+                    if (seenIndices.has(tileIdx)) continue;
+                    seenIndices.add(tileIdx);
 
-            const imagePath = this._getImagePath(tileInfo.imageId || tileInfo.animId);
+                    const tileInfo = this.allTiles[tileIdx];
+                    const imageId = tileInfo.id;
+                    
+                    let dim = this.tileDimensions.get(imageId);
+                    let imagePath;
+                    
+                    if (!dim) {
+                        imagePath = this._getImagePath(imageId);
+                        const asset = Assets.image(imagePath);
+                        dim = { 
+                            width: asset.width || 64, 
+                            height: asset.height || 64 
+                        };
+                        this.tileDimensions.set(imageId, dim);
+                        tileInfo._cachedPath = imagePath;
+                    } else {
+                        imagePath = tileInfo._cachedPath || this._getImagePath(imageId);
+                    }
 
-            let tileDim = this.tileDimensions.get(tileInfo.imageId || tileInfo.animId);
+                    if (tileInfo.convertedX + dim.width <= minX || 
+                        tileInfo.convertedX >= maxX ||
+                        tileInfo.convertedY + dim.height <= minY || 
+                        tileInfo.convertedY >= maxY) {
+                        continue;
+                    }
 
-            if (!tileDim) {
-                const asset = Assets.image(imagePath);
-                tileDim = {
-                    width: asset.width || 64,
-                    height: asset.height || 64
-                };
-                this.tileDimensions.set(tileInfo.imageId || tileInfo.animId, tileDim);
-            }
+                    requiredAssets.add(imagePath);
 
-            const isVisible = (
-                tileInfo.convertedX + tileDim.width > minX &&
-                tileInfo.convertedX < maxX &&
-                tileInfo.convertedY + tileDim.height > minY &&
-                tileInfo.convertedY < maxY
-            );
-
-            if (isVisible) {
-                stillVisible.add(imagePath);
-
-                if (!this.loadedAssets.has(imagePath)) {
-                    const asset = Assets.image(imagePath);
-                    this.loadedAssets.set(imagePath, {
-                        refCount: 0,
-                        width: asset.width,
-                        height: asset.height
+                    newVisibleTiles.push({
+                        imageId: imageId,
+                        imagePath: imagePath,
+                        posX: tileInfo.convertedX,
+                        posY: tileInfo.convertedY,
+                        depth: tileInfo.depth || 0,
+                        layer: tileInfo.layer
                     });
                 }
+            }
+        }
 
-                this.loadedAssets.get(imagePath).refCount++;
+        this.loadedAssets.forEach((info, path) => {
+            if (!requiredAssets.has(path)) {
+                Assets.free(path);
+            }
+        });
 
-                newVisibleTiles.push({
-                    imageId: tileInfo.imageId || tileInfo.animId,
-                    imagePath: imagePath,
-                    posX: tileInfo.convertedX,
-                    posY: tileInfo.convertedY,
-                    depth: tileInfo.depth || 0,
-                    layer: tileInfo.layer
+        requiredAssets.forEach(path => {
+            if (!this.loadedAssets.has(path)) {
+                const asset = Assets.image(path);
+                this.loadedAssets.set(path, {
+                    loaded: true,
+                    width: asset.width,
+                    height: asset.height
                 });
             }
         });
 
-        this.loadedAssets.forEach((info, path) => {
-            if (!stillVisible.has(path)) {
-                Assets.free(path);
-                this.loadedAssets.delete(path);
-            } else {
-                info.refCount = 0;
+        const newLoadedAssets = new Map();
+        requiredAssets.forEach(path => {
+            if (this.loadedAssets.has(path)) {
+                newLoadedAssets.set(path, this.loadedAssets.get(path));
             }
         });
+        this.loadedAssets = newLoadedAssets;
 
         newVisibleTiles.sort((a, b) => (a.depth || 0) - (b.depth || 0));
-
         this.visibleTiles = newVisibleTiles;
-        this.lastCameraX = cameraX;
-        this.lastCameraY = cameraY;
     }
 
     render(cameraX, cameraY) {
@@ -215,14 +224,9 @@ export default class TileMapRenderer {
             if (asset && asset.ready && asset.ready()) {
                 const screenX = tile.posX - cameraX;
                 const screenY = tile.posY - cameraY;
-
                 asset.draw(screenX, screenY);
             }
         }
-    }
-
-    _getImagePath(imageId) {
-        return `assets/img/tiles/${imageId}.png`;
     }
 
     getStats() {
@@ -239,23 +243,17 @@ export default class TileMapRenderer {
             totalTiles: this.allTiles.length,
             cachedDimensions: this.tileDimensions.size,
             spatialCells: this.spatialGrid.size,
-            scaleY: this.scaleY,
-            depthRange: this.allTiles.length > 0 ? {
-                min: this.allTiles[this.allTiles.length - 1].depth,
-                max: this.allTiles[0].depth
-            } : null
+            scaleY: this.scaleY
         };
     }
 
     free() {
-        this.loadedAssets.forEach((info, path) => {
-            Assets.free(path);
-        });
-
+        this.loadedAssets.forEach((_, path) => Assets.free(path));
         this.visibleTiles = [];
         this.allTiles = [];
         this.loadedAssets.clear();
         this.tileDimensions.clear();
         this.spatialGrid.clear();
+        this._pathCache.clear();
     }
 }
