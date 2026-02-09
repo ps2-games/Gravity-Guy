@@ -250,8 +250,8 @@ export default class GameScreen extends ScreenBase {
 
     updateCamera() {
         if (this.player) {
-            this.cameraX = Math.max(0, this.player.x - SCREEN_WIDTH / 2);
-            this.cameraY = Math.max(0, this.player.y - SCREEN_HEIGHT / 2);
+            this.cameraX = Math.max(0, this.player.movement.position.x - SCREEN_WIDTH / 2);
+            this.cameraY = Math.max(0, this.player.movement.position.y - SCREEN_HEIGHT / 2);
         }
     }
 
