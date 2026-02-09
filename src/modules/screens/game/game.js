@@ -7,6 +7,7 @@ import ScreenBase from "../screenBase.js";
 import StateManager from "../../stateManager/stateManager.js"
 import Player from "../../player/player.js"
 import TileMapRenderer from "./tileMapRenderer.js"
+import Camera from "../../camera/camera.js"
 
 export default class GameScreen extends ScreenBase {
     constructor() {
@@ -14,8 +15,9 @@ export default class GameScreen extends ScreenBase {
         this.player = null;
         this.isPaused = false;
         this.selectedIndex = 0;
-        this.cameraX = 0;
-        this.cameraY = 0;
+        this.camera = new Camera()
+        this.groundColliders = []; // Armazenar IDs dos colisores de chão
+        this.safeZoneHeight = 100; // Espaço vertical livre no meio da tela
     }
 
     init() {
@@ -26,7 +28,11 @@ export default class GameScreen extends ScreenBase {
         super.onEnter(fromState);
         this._initColliders();
         this._initAssets();
-        this.player = new Player({ PLAYER_PORT: PLAYER_ONE_PORT, initialX: 50, initialY: 50 })
+        
+        // Posição inicial do jogador
+        const initialX = SCREEN_WIDTH / 2;
+        const initialY = SCREEN_HEIGHT / 2;
+        this.player = new Player({ PLAYER_PORT: PLAYER_ONE_PORT, initialX, initialY })
 
         const mapData = JSON.parse(std.loadFile(`${ASSETS_PATH.MAPS}/sp1.json`));
         this.tileMapRenderer = new TileMapRenderer(mapData, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -37,32 +43,132 @@ export default class GameScreen extends ScreenBase {
 
         setAnimation(this.BTN_RESUME_PAUSE, "hover");
         setAnimation(this.BTN_RETURN_MENU, "normal");
-        
-        this.cameraX = 0;
-        this.cameraY = 0;
+
+        // Configura limites da câmera baseado no tamanho do mapa
+        if (this.tileMapRenderer && this.tileMapRenderer.getMapSize) {
+            const mapSize = this.tileMapRenderer.getMapSize();
+            this.camera.setBounds(0, mapSize.width, 0, mapSize.height);
+        }
+
+        // Posiciona a câmera inicialmente no jogador
+        this.camera.x = initialX - SCREEN_WIDTH / 2;
+        this.camera.y = initialY - SCREEN_HEIGHT / 2;
     }
 
     _initColliders() {
-        Collision.register({
-            type: 'rect',
-            x: 0,
-            y: SCREEN_HEIGHT - 50,
-            w: SCREEN_WIDTH,
-            h: 50,
-            layer: 'ground',
-            tags: ['ground', 'solid'],
-            static: true
-        });
+        // Primeiro, limpa qualquer colisor antigo
+        this.groundColliders.forEach(id => Collision.unregister(id));
+        this.groundColliders = [];
 
-        Collision.register({
+        // Calcula a posição Y do meio da tela para criar o espaço livre
+        const screenCenterY = SCREEN_HEIGHT / 2;
+        const safeZoneTop = screenCenterY - this.safeZoneHeight / 2;
+        const safeZoneBottom = screenCenterY + this.safeZoneHeight / 2;
+
+        // COLISOR SUPERIOR (acima da zona segura)
+        const topColliderId = Collision.register({
             type: 'rect',
             x: 0,
             y: 0,
             w: SCREEN_WIDTH,
-            h: 50,
+            h: safeZoneTop, // Altura até o topo da zona segura
             layer: 'ground',
-            tags: ['ground', 'solid'],
+            tags: ['ground', 'solid', 'top'],
             static: true
+        });
+        this.groundColliders.push(topColliderId);
+
+        // COLISOR INFERIOR (abaixo da zona segura)
+        const bottomColliderId = Collision.register({
+            type: 'rect',
+            x: 0,
+            y: safeZoneBottom,
+            w: SCREEN_WIDTH,
+            h: SCREEN_HEIGHT - safeZoneBottom, // Altura da parte inferior
+            layer: 'ground',
+            tags: ['ground', 'solid', 'bottom'],
+            static: true
+        });
+        this.groundColliders.push(bottomColliderId);
+
+        // COLISORES LATERAIS (opcional - se quiser limitar horizontalmente)
+        const sideWidth = 50; // Largura dos colisores laterais
+        const leftColliderId = Collision.register({
+            type: 'rect',
+            x: 0,
+            y: 0,
+            w: sideWidth,
+            h: SCREEN_HEIGHT,
+            layer: 'wall',
+            tags: ['wall', 'solid', 'left'],
+            static: true
+        });
+        this.groundColliders.push(leftColliderId);
+
+        const rightColliderId = Collision.register({
+            type: 'rect',
+            x: SCREEN_WIDTH - sideWidth,
+            y: 0,
+            w: sideWidth,
+            h: SCREEN_HEIGHT,
+            layer: 'wall',
+            tags: ['wall', 'solid', 'right'],
+            static: true
+        });
+        this.groundColliders.push(rightColliderId);
+    }
+
+    updateCollidersWithCamera() {
+        // Atualiza a posição dos colisores para acompanhar a câmera
+        // Converte coordenadas da tela para coordenadas do mundo
+        const cameraWorldPos = {
+            x: this.camera.x,
+            y: this.camera.y
+        };
+
+        // Calcula as posições Y relativas à câmera
+        const screenCenterY = SCREEN_HEIGHT / 2;
+        const safeZoneTop = screenCenterY - this.safeZoneHeight / 2;
+        const safeZoneBottom = screenCenterY + this.safeZoneHeight / 2;
+
+        // Atualiza cada colisor
+        this.groundColliders.forEach((id, index) => {
+            const collider = Collision.get(id);
+            if (!collider) return;
+
+            // Calcula nova posição baseada no tipo de colisor
+            let newX = cameraWorldPos.x;
+            let newY = cameraWorldPos.y;
+            let newW = collider.w;
+            let newH = collider.h;
+
+            if (collider.tags.includes('top')) {
+                // Colisor superior: posição Y fixa relativa à câmera
+                newY = cameraWorldPos.y;
+                newH = safeZoneTop;
+            } else if (collider.tags.includes('bottom')) {
+                // Colisor inferior: posição Y começa após a zona segura
+                newY = cameraWorldPos.y + safeZoneBottom;
+                newH = SCREEN_HEIGHT - safeZoneBottom;
+            } else if (collider.tags.includes('left')) {
+                // Colisor esquerdo: posição X fixa
+                newX = cameraWorldPos.x;
+                newW = 50;
+                newH = SCREEN_HEIGHT;
+            } else if (collider.tags.includes('right')) {
+                // Colisor direito: posição X no lado direito
+                newX = cameraWorldPos.x + SCREEN_WIDTH - 50;
+                newW = 50;
+                newH = SCREEN_HEIGHT;
+            }
+
+            // Atualiza o colisor
+            Collision.update(id, {
+                x: newX,
+                y: newY,
+                w: newW,
+                h: newH
+            });
         });
     }
 
@@ -199,6 +305,33 @@ export default class GameScreen extends ScreenBase {
         if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.L1)) {
             const stats = this.tileMapRenderer.getStats();
             console.log('TileMapRenderer Stats:', JSON.stringify(stats, null, 2));
+            console.log('Camera:', { x: this.camera.x, y: this.camera.y });
+            console.log('Player:', this.player.movement.position);
+            
+            // Mostra info dos colisores
+            console.log('Ground colliders:', this.groundColliders.map(id => {
+                const collider = Collision.get(id);
+                return collider ? { id, tags: collider.tags, x: collider.x, y: collider.y } : null;
+            }));
+        }
+
+        // MOVIMENTO DO JOGADOR
+        if (!this.isPaused) {
+            if (Gamepad.player(PLAYER_ONE_PORT).pressed(Pads.RIGHT)) {
+                this.player.movement.position.x += 5;
+            }
+
+            if (Gamepad.player(PLAYER_ONE_PORT).pressed(Pads.LEFT)) {
+                this.player.movement.position.x -= 5;
+            }
+
+            if (Gamepad.player(PLAYER_ONE_PORT).pressed(Pads.UP)) {
+                this.player.movement.position.y -= 5;
+            }
+
+            if (Gamepad.player(PLAYER_ONE_PORT).pressed(Pads.DOWN)) {
+                this.player.movement.position.y += 5;
+            }
         }
 
         if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.START)) {
@@ -207,6 +340,8 @@ export default class GameScreen extends ScreenBase {
 
             if (this.isPaused) {
                 this.selectedIndex = 0;
+                setAnimation(this.BTN_RESUME_PAUSE, "hover");
+                setAnimation(this.BTN_RETURN_MENU, "normal");
             }
         }
 
@@ -250,8 +385,7 @@ export default class GameScreen extends ScreenBase {
 
     updateCamera() {
         if (this.player) {
-            this.cameraX = Math.max(0, this.player.movement.position.x - SCREEN_WIDTH / 2);
-            this.cameraY = Math.max(0, this.player.movement.position.y - SCREEN_HEIGHT / 2);
+            this.camera.update(this.player.movement.position.x, this.player.movement.position.y);
         }
     }
 
@@ -263,10 +397,16 @@ export default class GameScreen extends ScreenBase {
         if (!this.isPaused) {
             if (this.player) {
                 this.player.update(deltaTime);
-                
+
+                // Atualiza a câmera para seguir o jogador
                 this.updateCamera();
-                
-                this.tileMapRenderer.update(0, 0);
+
+                // Atualiza os colisores para acompanhar a câmera
+                this.updateCollidersWithCamera();
+
+                if (this.tileMapRenderer) {
+                    this.tileMapRenderer.update(this.camera.x, this.camera.y);
+                }
             }
             Collision.check();
         }
@@ -283,10 +423,32 @@ export default class GameScreen extends ScreenBase {
         this.drawParallaxTop(parallaxDeltaTime);
 
         if (this.tileMapRenderer) {
-            this.tileMapRenderer.render(0, 0);
+            this.tileMapRenderer.render(this.camera.x, this.camera.y);
         }
-        
-        if (this.player) this.player.draw();
+
+        if (this.player) {
+            // CONVERTE coordenadas do mundo para tela usando a câmera
+            const screenPos = this.camera.worldToScreen(
+                this.player.movement.position.x,
+                this.player.movement.position.y
+            );
+            // Desenha o jogador na posição convertida
+            this.player.draw(screenPos.x, screenPos.y);
+        }
+
+        // Desenha área segura (para debug visual)
+        if (Collision.debugMode) {
+            const screenCenterY = SCREEN_HEIGHT / 2;
+            const safeZoneTop = screenCenterY - this.safeZoneHeight / 2;
+            const safeZoneBottom = screenCenterY + this.safeZoneHeight / 2;
+            
+            // Desenha a área segura (verde semi-transparente)
+            Draw.rect(0, safeZoneTop, SCREEN_WIDTH, this.safeZoneHeight, Color.new(0, 255, 0, 30));
+            
+            // Linhas demarcando a área segura
+            Draw.line(0, safeZoneTop, SCREEN_WIDTH, safeZoneTop, Color.new(0, 255, 0, 150));
+            Draw.line(0, safeZoneBottom, SCREEN_WIDTH, safeZoneBottom, Color.new(0, 255, 0, 150));
+        }
 
         if (this.isPaused) this.drawPauseUI();
 
@@ -316,9 +478,12 @@ export default class GameScreen extends ScreenBase {
         }
 
         Collision.clear()
-        this.player.destroy();
-        this.player = null;
-        this.isPaused = null;
+        if (this.player) {
+            this.player.destroy();
+            this.player = null;
+        }
+        this.isPaused = false;
+        this.groundColliders = [];
 
         if (this.tileMapRenderer) {
             this.tileMapRenderer.free();

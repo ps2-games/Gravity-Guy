@@ -7,9 +7,6 @@ export default class TileMapRenderer {
         this.viewportHeight = viewportHeight;
 
         this.FLASH_HEIGHT = 480;
-        this.FLASH_Y_BASE = 425;
-        this.FLASH_Y_OFFSET = 36;
-
         this.scaleY = viewportHeight / this.FLASH_HEIGHT;
         this.visibleTiles = [];
         this.loadedAssets = new Map();
@@ -20,10 +17,16 @@ export default class TileMapRenderer {
         
         this.tileDimensions = new Map();
         this._pathCache = new Map();
+        
+        this._lastVisitedCells = new Set();
+        this._currentVisitedCells = new Set();
+        
+        this.UPDATE_THRESHOLD = 8;
 
         this._mergeVisualLayers();
         this._convertCoordinates();
         this._buildSpatialIndex();
+        this._preloadAllAssets();
     }
 
     _mergeVisualLayers() {
@@ -84,35 +87,66 @@ export default class TileMapRenderer {
 
     _buildSpatialIndex() {
         const CELL_SIZE = 256;
+        this.CELL_SIZE = CELL_SIZE;
         this.spatialGrid = new Map();
 
         for (let i = 0; i < this.allTiles.length; i++) {
             const tile = this.allTiles[i];
-            const cellX = Math.floor(tile.convertedX / CELL_SIZE);
-            const cellY = Math.floor(tile.convertedY / CELL_SIZE);
-            const cellKey = `${cellX},${cellY}`;
-
-            if (!this.spatialGrid.has(cellKey)) {
-                this.spatialGrid.set(cellKey, []);
+            
+            const imageId = tile.id;
+            const imagePath = `assets/img/tiles/${imageId}.png`;
+            tile._cachedPath = imagePath;
+            this._pathCache.set(imageId, imagePath);
+            
+            const asset = Assets.image(imagePath);
+            const width = asset.width || 64;
+            const height = asset.height || 64;
+            
+            tile._width = width;
+            tile._height = height;
+            tile._right = tile.convertedX + width;
+            tile._bottom = tile.convertedY + height;
+            
+            this.tileDimensions.set(imageId, { width, height });
+            
+            const startCellX = Math.floor(tile.convertedX / CELL_SIZE);
+            const endCellX = Math.floor(tile._right / CELL_SIZE);
+            const startCellY = Math.floor(tile.convertedY / CELL_SIZE);
+            const endCellY = Math.floor(tile._bottom / CELL_SIZE);
+            
+            for (let cx = startCellX; cx <= endCellX; cx++) {
+                for (let cy = startCellY; cy <= endCellY; cy++) {
+                    const cellKey = `${cx},${cy}`;
+                    if (!this.spatialGrid.has(cellKey)) {
+                        this.spatialGrid.set(cellKey, []);
+                    }
+                    this.spatialGrid.get(cellKey).push(i);
+                }
             }
-            this.spatialGrid.get(cellKey).push(i);
         }
     }
 
-    _getImagePath(imageId) {
-        let path = this._pathCache.get(imageId);
-        if (!path) {
-            path = `assets/img/tiles/${imageId}.png`;
-            this._pathCache.set(imageId, path);
+    _preloadAllAssets() {
+        const uniquePaths = new Set();
+        for (let i = 0; i < this.allTiles.length; i++) {
+            uniquePaths.add(this.allTiles[i]._cachedPath);
         }
-        return path;
+
+        uniquePaths.forEach(path => {
+            const asset = Assets.image(path);
+            this.loadedAssets.set(path, {
+                loaded: true,
+                width: asset.width || 64,
+                height: asset.height || 64
+            });
+        });
     }
 
     update(cameraX, cameraY) {
         const camDeltaX = Math.abs(cameraX - this.lastCameraX);
         const camDeltaY = Math.abs(cameraY - this.lastCameraY);
         
-        if (camDeltaX < 1 && camDeltaY < 1) {
+        if (camDeltaX < this.UPDATE_THRESHOLD && camDeltaY < this.UPDATE_THRESHOLD) {
             return;
         }
 
@@ -124,108 +158,72 @@ export default class TileMapRenderer {
         const minY = cameraY - this.BUFFER_ZONE;
         const maxY = cameraY + this.viewportHeight + this.BUFFER_ZONE;
 
-        const CELL_SIZE = 256;
-        const startCellX = Math.floor(minX / CELL_SIZE);
-        const endCellX = Math.floor(maxX / CELL_SIZE);
-        const startCellY = Math.floor(minY / CELL_SIZE);
-        const endCellY = Math.floor(maxY / CELL_SIZE);
+        const startCellX = Math.floor(minX / this.CELL_SIZE);
+        const endCellX = Math.floor(maxX / this.CELL_SIZE);
+        const startCellY = Math.floor(minY / this.CELL_SIZE);
+        const endCellY = Math.floor(maxY / this.CELL_SIZE);
 
-        const newVisibleTiles = [];
-        const seenIndices = new Set();
-        const requiredAssets = new Set();
+        let visibleCount = 0;
+        this._currentVisitedCells.clear();
 
         for (let cx = startCellX; cx <= endCellX; cx++) {
             for (let cy = startCellY; cy <= endCellY; cy++) {
                 const cellKey = `${cx},${cy}`;
-                const indices = this.spatialGrid.get(cellKey);
+                this._currentVisitedCells.add(cellKey);
                 
+                const indices = this.spatialGrid.get(cellKey);
                 if (!indices) continue;
 
-                for (let i = 0; i < indices.length; i++) {
-                    const tileIdx = indices[i];
+                const len = indices.length;
+                for (let i = 0; i < len; i++) {
+                    const tileInfo = this.allTiles[indices[i]];
                     
-                    if (seenIndices.has(tileIdx)) continue;
-                    seenIndices.add(tileIdx);
-
-                    const tileInfo = this.allTiles[tileIdx];
-                    const imageId = tileInfo.id;
-                    
-                    let dim = this.tileDimensions.get(imageId);
-                    let imagePath;
-                    
-                    if (!dim) {
-                        imagePath = this._getImagePath(imageId);
-                        const asset = Assets.image(imagePath);
-                        dim = { 
-                            width: asset.width || 64, 
-                            height: asset.height || 64 
-                        };
-                        this.tileDimensions.set(imageId, dim);
-                        tileInfo._cachedPath = imagePath;
-                    } else {
-                        imagePath = tileInfo._cachedPath || this._getImagePath(imageId);
-                    }
-
-                    if (tileInfo.convertedX + dim.width <= minX || 
-                        tileInfo.convertedX >= maxX ||
-                        tileInfo.convertedY + dim.height <= minY || 
-                        tileInfo.convertedY >= maxY) {
+                    if (tileInfo._right <= minX || tileInfo.convertedX >= maxX ||
+                        tileInfo._bottom <= minY || tileInfo.convertedY >= maxY) {
                         continue;
                     }
 
-                    requiredAssets.add(imagePath);
-
-                    newVisibleTiles.push({
-                        imageId: imageId,
-                        imagePath: imagePath,
-                        posX: tileInfo.convertedX,
-                        posY: tileInfo.convertedY,
-                        depth: tileInfo.depth || 0,
-                        layer: tileInfo.layer
-                    });
+                    if (visibleCount < this.visibleTiles.length) {
+                        const tile = this.visibleTiles[visibleCount];
+                        tile.imageId = tileInfo.id;
+                        tile.imagePath = tileInfo._cachedPath;
+                        tile.posX = tileInfo.convertedX;
+                        tile.posY = tileInfo.convertedY;
+                        tile.depth = tileInfo.depth;
+                        tile.layer = tileInfo.layer;
+                    } else {
+                        this.visibleTiles.push({
+                            imageId: tileInfo.id,
+                            imagePath: tileInfo._cachedPath,
+                            posX: tileInfo.convertedX,
+                            posY: tileInfo.convertedY,
+                            depth: tileInfo.depth,
+                            layer: tileInfo.layer
+                        });
+                    }
+                    visibleCount++;
                 }
             }
         }
 
-        this.loadedAssets.forEach((info, path) => {
-            if (!requiredAssets.has(path)) {
-                Assets.free(path);
-            }
-        });
+        this.visibleTiles.length = visibleCount;
 
-        requiredAssets.forEach(path => {
-            if (!this.loadedAssets.has(path)) {
-                const asset = Assets.image(path);
-                this.loadedAssets.set(path, {
-                    loaded: true,
-                    width: asset.width,
-                    height: asset.height
-                });
-            }
-        });
-
-        const newLoadedAssets = new Map();
-        requiredAssets.forEach(path => {
-            if (this.loadedAssets.has(path)) {
-                newLoadedAssets.set(path, this.loadedAssets.get(path));
-            }
-        });
-        this.loadedAssets = newLoadedAssets;
-
-        newVisibleTiles.sort((a, b) => (a.depth || 0) - (b.depth || 0));
-        this.visibleTiles = newVisibleTiles;
+        const temp = this._lastVisitedCells;
+        this._lastVisitedCells = this._currentVisitedCells;
+        this._currentVisitedCells = temp;
     }
 
     render(cameraX, cameraY) {
-        for (let i = this.visibleTiles.length - 1; i >= 0; i--) {
-            const tile = this.visibleTiles[i];
+        const tiles = this.visibleTiles;
+        const len = tiles.length;
+        
+        for (let i = 0; i < len; i++) {
+            const tile = tiles[i];
             const asset = Assets.image(tile.imagePath);
 
-            if (asset && asset.ready && asset.ready()) {
-                const screenX = tile.posX - cameraX;
-                const screenY = tile.posY - cameraY;
-                asset.draw(screenX, screenY);
-            }
+            const screenX = tile.posX - cameraX;
+            const screenY = tile.posY - cameraY;
+            asset.draw(screenX, screenY);
         }
     }
 
@@ -243,7 +241,8 @@ export default class TileMapRenderer {
             totalTiles: this.allTiles.length,
             cachedDimensions: this.tileDimensions.size,
             spatialCells: this.spatialGrid.size,
-            scaleY: this.scaleY
+            scaleY: this.scaleY,
+            updateThreshold: this.UPDATE_THRESHOLD
         };
     }
 
@@ -255,5 +254,7 @@ export default class TileMapRenderer {
         this.tileDimensions.clear();
         this.spatialGrid.clear();
         this._pathCache.clear();
+        this._lastVisitedCells.clear();
+        this._currentVisitedCells.clear();
     }
 }
