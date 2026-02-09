@@ -1,7 +1,7 @@
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../../shared/constants.js";
 
 export default class Camera {
-    constructor() { this.x = 0; this.y = 0; this.smooth = 0.15; }
+    constructor() { this.x = 0; this.y = 0; this.smooth = 0.15f; }
 
     update(targetX, targetY) {
         this.x += (targetX - this.x) * this.smooth;
