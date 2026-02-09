@@ -3,8 +3,8 @@ import Assets from "../../../shared/assets.js"
 import Collision from "../../../shared/collision.js"
 import { ASSETS_PATH, GAME_STATE, PLAYER_ONE_PORT, SCREEN_HEIGHT, SCREEN_WIDTH } from "../../../shared/constants.js"
 import Gamepad from "../../../shared/gamepad.js"
-import ScreenBase from "../../../shared/screenBase.js"
-import StateManager from "../../../shared/stateManager.js"
+import ScreenBase from "../screenBase.js";
+import StateManager from "../../stateManager/stateManager.js"
 import Player from "../../player/player.js"
 import TileMapRenderer from "./tileMapRenderer.js"
 

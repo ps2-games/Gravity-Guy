@@ -1,6 +1,6 @@
 import Assets from "../../../shared/assets.js";
 import { ASSETS_PATH, SCREEN_HEIGHT, SCREEN_WIDTH } from "../../../shared/constants.js";
-import ScreenBase from "../../../shared/screenBase.js";
+import ScreenBase from "../screenBase.js";
 
 export default class LoadingScreen extends ScreenBase {
     constructor() {

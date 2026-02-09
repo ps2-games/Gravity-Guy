@@ -1,4 +1,4 @@
-import { GAME_STATE } from "./constants.js";
+import { GAME_STATE } from "../../shared/constants.js";
 
 class StateManager {
     constructor() {

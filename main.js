@@ -3,7 +3,7 @@ import LoadingScreen from './src/modules/screens/loading/loading.js';
 import MainMenuScreen from './src/modules/screens/main_menu/menu.js';
 import { GAME_STATE } from './src/shared/constants.js';
 import Gamepad from './src/shared/gamepad.js'
-import StateManager from './src/shared/stateManager.js';
+import StateManager from './src/modules/stateManager/stateManager.js';
 
 Screen.setParam(Screen.DEPTH_TEST_ENABLE, false);
 
