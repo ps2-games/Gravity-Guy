@@ -1,5 +1,4 @@
 import Assets from '../../../shared/assets.js';
-import { SCREEN_WIDTH, SCREEN_HEIGHT } from '../../../shared/constants.js';
 
 export default class TileMapRenderer {
     constructor(mapData, viewportWidth, viewportHeight) {
