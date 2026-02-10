@@ -6,7 +6,7 @@ export default class TileMapRenderer {
         this.scaleY = SCREEN_HEIGHT / this.FLASH_HEIGHT;
         this.cameraX = 0;
         this.cameraY = 0;
-        
+
         this.tileConfigs = [
             JSON.parse(std.loadFile(ASSETS_PATH.TEXTURES + "/texture-0.json")),
             JSON.parse(std.loadFile(ASSETS_PATH.TEXTURES + "/texture-1.json")),
@@ -75,10 +75,15 @@ export default class TileMapRenderer {
     }
 
     _createDescriptor() {
-        const framesCounts = this.tileConfigs.map(cfg => Object.keys(cfg.frames).length);
-
-        let acc = 0;
-        const offsets = framesCounts.map(count => (acc += count) - 1);
+        const { offsets } = this.tileConfigs.reduce(
+            (acc, cfg) => {
+                const count = Object.keys(cfg.frames).length;
+                acc.sum += count;
+                acc.offsets.push(acc.sum - 1);
+                return acc;
+            },
+            { sum: 0, offsets: [] }
+        );
 
         const descriptor = new TileMap.Descriptor({
             textures: this.SPRITE_SHEETS,
@@ -86,8 +91,8 @@ export default class TileMapRenderer {
                 {
                     texture_index: 0,
                     blend_mode: Screen.alphaEquation(
-                        Screen.ZERO_RGB,
                         Screen.SRC_RGB,
+                        Screen.DST_RGB,
                         Screen.SRC_ALPHA,
                         Screen.DST_RGB,
                         0
@@ -97,8 +102,8 @@ export default class TileMapRenderer {
                 {
                     texture_index: 1,
                     blend_mode: Screen.alphaEquation(
-                        Screen.ZERO_RGB,
                         Screen.SRC_RGB,
+                        Screen.DST_RGB,
                         Screen.SRC_ALPHA,
                         Screen.DST_RGB,
                         0
@@ -108,8 +113,8 @@ export default class TileMapRenderer {
                 {
                     texture_index: 2,
                     blend_mode: Screen.alphaEquation(
-                        Screen.ZERO_RGB,
                         Screen.SRC_RGB,
+                        Screen.DST_RGB,
                         Screen.SRC_ALPHA,
                         Screen.DST_RGB,
                         0
@@ -132,7 +137,7 @@ export default class TileMapRenderer {
         let failCount = 0;
         const failedTiles = [];
 
-        const sprites = visualInfo.map((v, index) => {
+        const sprites = visualInfo.map((v) => {
             const tileId = v.imageId;
             const tileConfig = this._getTileConfig(tileId);
 
