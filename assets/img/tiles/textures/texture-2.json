@@ -1,71 +1,95 @@
 {
   "frames": {
-    "Blue03.png": {
+    "DarkBridge001.png": {
       "frame": {
         "x": 0,
         "y": 0,
-        "w": 154,
-        "h": 38
+        "w": 117,
+        "h": 52
       },
       "rotated": true,
-      "trimmed": false,
+      "trimmed": true,
       "spriteSourceSize": {
         "x": 0,
-        "y": 0,
-        "w": 154,
-        "h": 38
+        "y": 1,
+        "w": 117,
+        "h": 52
       },
       "sourceSize": {
-        "w": 154,
-        "h": 38
+        "w": 118,
+        "h": 53
       },
       "pivot": {
         "x": 0.5,
         "y": 0.5
       }
     },
-    "Orange03.png": {
+    "DarkBridge002.png": {
       "frame": {
         "x": 0,
-        "y": 154,
-        "w": 154,
-        "h": 38
+        "y": 117,
+        "w": 117,
+        "h": 44
       },
       "rotated": true,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 154,
-        "h": 38
+        "w": 117,
+        "h": 44
       },
       "sourceSize": {
-        "w": 154,
-        "h": 38
+        "w": 117,
+        "h": 44
       },
       "pivot": {
         "x": 0.5,
         "y": 0.5
       }
     },
-    "Orange03Light.png": {
+    "OrangeHolderFront.png": {
       "frame": {
         "x": 0,
-        "y": 308,
-        "w": 154,
-        "h": 38
+        "y": 234,
+        "w": 40,
+        "h": 115
       },
-      "rotated": true,
+      "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 154,
-        "h": 38
+        "w": 40,
+        "h": 115
       },
       "sourceSize": {
-        "w": 154,
-        "h": 38
+        "w": 40,
+        "h": 115
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "BlueLightHolderFront.png": {
+      "frame": {
+        "x": 0,
+        "y": 349,
+        "w": 39,
+        "h": 113
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 39,
+        "h": 113
+      },
+      "sourceSize": {
+        "w": 39,
+        "h": 113
       },
       "pivot": {
         "x": 0.5,
@@ -96,106 +120,10 @@
         "y": 0.5
       }
     },
-    "BridgeCrossSingle.png": {
-      "frame": {
-        "x": 40,
-        "y": 462,
-        "w": 49,
-        "h": 40
-      },
-      "rotated": true,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 49,
-        "h": 40
-      },
-      "sourceSize": {
-        "w": 49,
-        "h": 40
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "Orange03grey.png": {
-      "frame": {
-        "x": 38,
-        "y": 0,
-        "w": 154,
-        "h": 38
-      },
-      "rotated": true,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 154,
-        "h": 38
-      },
-      "sourceSize": {
-        "w": 154,
-        "h": 38
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "Grey03.png": {
-      "frame": {
-        "x": 38,
-        "y": 154,
-        "w": 153,
-        "h": 48
-      },
-      "rotated": true,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 153,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 153,
-        "h": 48
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "Yellow03.png": {
-      "frame": {
-        "x": 76,
-        "y": 0,
-        "w": 146,
-        "h": 38
-      },
-      "rotated": true,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 146,
-        "h": 38
-      },
-      "sourceSize": {
-        "w": 147,
-        "h": 38
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
     "GreyHolderFront.png": {
       "frame": {
-        "x": 38,
-        "y": 307,
+        "x": 39,
+        "y": 349,
         "w": 37,
         "h": 111
       },
@@ -216,216 +144,48 @@
         "y": 0.5
       }
     },
-    "OrangeLight02.png": {
+    "BridgeCrossSingle.png": {
       "frame": {
-        "x": 38,
-        "y": 418,
-        "w": 45,
-        "h": 44
+        "x": 40,
+        "y": 460,
+        "w": 49,
+        "h": 40
       },
-      "rotated": false,
+      "rotated": true,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 45,
-        "h": 44
-      },
-      "sourceSize": {
-        "w": 45,
-        "h": 44
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "BlueLightCubeDark.png": {
-      "frame": {
-        "x": 80,
-        "y": 462,
-        "w": 48,
-        "h": 45
-      },
-      "rotated": true,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 1,
-        "y": 0,
-        "w": 48,
-        "h": 45
+        "w": 49,
+        "h": 40
       },
       "sourceSize": {
         "w": 49,
-        "h": 45
+        "h": 40
       },
       "pivot": {
         "x": 0.5,
         "y": 0.5
       }
     },
-    "BuildingWallBrown001.png": {
+    "CoverupR2_2.png": {
       "frame": {
-        "x": 75,
-        "y": 307,
-        "w": 108,
-        "h": 70
+        "x": 40,
+        "y": 234,
+        "w": 105,
+        "h": 78
       },
       "rotated": true,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 108,
-        "h": 70
+        "w": 105,
+        "h": 78
       },
       "sourceSize": {
-        "w": 108,
-        "h": 70
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "accelerator.png": {
-      "frame": {
-        "x": 83,
-        "y": 415,
-        "w": 47,
-        "h": 39
-      },
-      "rotated": true,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 47,
-        "h": 39
-      },
-      "sourceSize": {
-        "w": 47,
-        "h": 39
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "BridgeBY002.png": {
-      "frame": {
-        "x": 122,
-        "y": 415,
-        "w": 47,
-        "h": 35
-      },
-      "rotated": true,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 47,
-        "h": 35
-      },
-      "sourceSize": {
-        "w": 47,
-        "h": 35
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "BridgeBY001.png": {
-      "frame": {
-        "x": 125,
-        "y": 462,
-        "w": 48,
-        "h": 35
-      },
-      "rotated": true,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 48,
-        "h": 35
-      },
-      "sourceSize": {
-        "w": 48,
-        "h": 35
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "Orange02light.png": {
-      "frame": {
-        "x": 160,
-        "y": 415,
-        "w": 81,
-        "h": 38
-      },
-      "rotated": true,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 81,
-        "h": 38
-      },
-      "sourceSize": {
-        "w": 81,
-        "h": 38
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "Creamy02.png": {
-      "frame": {
-        "x": 198,
-        "y": 415,
-        "w": 77,
-        "h": 38
-      },
-      "rotated": true,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 77,
-        "h": 38
-      },
-      "sourceSize": {
-        "w": 77,
-        "h": 38
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "Creamy03.png": {
-      "frame": {
-        "x": 236,
-        "y": 415,
-        "w": 77,
-        "h": 38
-      },
-      "rotated": true,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 77,
-        "h": 38
-      },
-      "sourceSize": {
-        "w": 77,
-        "h": 38
+        "w": 105,
+        "h": 78
       },
       "pivot": {
         "x": 0.5,
@@ -434,8 +194,8 @@
     },
     "003.png": {
       "frame": {
-        "x": 86,
-        "y": 146,
+        "x": 44,
+        "y": 117,
         "w": 35,
         "h": 102
       },
@@ -456,58 +216,10 @@
         "y": 0.5
       }
     },
-    "DoubleGlassBottomSingle.png": {
-      "frame": {
-        "x": 114,
-        "y": 248,
-        "w": 55,
-        "h": 36
-      },
-      "rotated": true,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 55,
-        "h": 36
-      },
-      "sourceSize": {
-        "w": 55,
-        "h": 36
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "GlassTunnelExtraBottom.png": {
-      "frame": {
-        "x": 86,
-        "y": 248,
-        "w": 33,
-        "h": 28
-      },
-      "rotated": true,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 33,
-        "h": 28
-      },
-      "sourceSize": {
-        "w": 33,
-        "h": 28
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
     "GreyHolder.png": {
       "frame": {
-        "x": 145,
-        "y": 303,
+        "x": 52,
+        "y": 0,
         "w": 35,
         "h": 102
       },
@@ -530,8 +242,8 @@
     },
     "GreyHolderLight.png": {
       "frame": {
-        "x": 114,
-        "y": 0,
+        "x": 76,
+        "y": 339,
         "w": 35,
         "h": 102
       },
@@ -552,96 +264,264 @@
         "y": 0.5
       }
     },
-    "CheckpointAnimation.png": {
+    "GreySingleLight.png": {
       "frame": {
-        "x": 114,
-        "y": 102,
-        "w": 44,
-        "h": 40
+        "x": 80,
+        "y": 441,
+        "w": 59,
+        "h": 48
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 59,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 59,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "CoverupR3_1.png": {
+      "frame": {
+        "x": 111,
+        "y": 339,
+        "w": 86,
+        "h": 98
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 86,
+        "h": 98
+      },
+      "sourceSize": {
+        "w": 86,
+        "h": 98
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "BlueLightWall.png": {
+      "frame": {
+        "x": 128,
+        "y": 437,
+        "w": 73,
+        "h": 85
       },
       "rotated": true,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 22,
-        "y": 20,
-        "w": 44,
-        "h": 40
-      },
-      "sourceSize": {
-        "w": 88,
-        "h": 79
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "BlueLightHolder.png": {
-      "frame": {
-        "x": 149,
-        "y": 0,
-        "w": 33,
-        "h": 102
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 33,
-        "h": 102
+        "w": 73,
+        "h": 85
       },
       "sourceSize": {
-        "w": 33,
-        "h": 102
+        "w": 74,
+        "h": 85
       },
       "pivot": {
         "x": 0.5,
         "y": 0.5
       }
     },
-    "OrangeHolder.png": {
+    "DoubleDarkGlassTopSingle.png": {
       "frame": {
-        "x": 182,
-        "y": 0,
-        "w": 33,
-        "h": 102
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 33,
-        "h": 102
-      },
-      "sourceSize": {
-        "w": 33,
-        "h": 102
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "RedPipeTop.png": {
-      "frame": {
-        "x": 121,
-        "y": 146,
-        "w": 77,
-        "h": 27
+        "x": 213,
+        "y": 437,
+        "w": 58,
+        "h": 42
       },
       "rotated": true,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 77,
-        "h": 27
+        "w": 58,
+        "h": 42
       },
       "sourceSize": {
-        "w": 77,
-        "h": 27
+        "w": 58,
+        "h": 42
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "DoubleDarkGlassBottomSingle.png": {
+      "frame": {
+        "x": 255,
+        "y": 437,
+        "w": 58,
+        "h": 36
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 58,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 58,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "CoverupR2_3.png": {
+      "frame": {
+        "x": 79,
+        "y": 102,
+        "w": 38,
+        "h": 81
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 38,
+        "h": 81
+      },
+      "sourceSize": {
+        "w": 38,
+        "h": 81
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "BlueLightCube.png": {
+      "frame": {
+        "x": 87,
+        "y": 183,
+        "w": 48,
+        "h": 45
+      },
+      "rotated": true,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 0,
+        "w": 48,
+        "h": 45
+      },
+      "sourceSize": {
+        "w": 49,
+        "h": 45
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "BlueLightCubeDark.png": {
+      "frame": {
+        "x": 132,
+        "y": 183,
+        "w": 48,
+        "h": 45
+      },
+      "rotated": true,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 0,
+        "w": 48,
+        "h": 45
+      },
+      "sourceSize": {
+        "w": 49,
+        "h": 45
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "Orange02grey.png": {
+      "frame": {
+        "x": 87,
+        "y": 0,
+        "w": 81,
+        "h": 38
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 81,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 81,
+        "h": 38
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "Orange02light.png": {
+      "frame": {
+        "x": 117,
+        "y": 81,
+        "w": 81,
+        "h": 38
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 81,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 81,
+        "h": 38
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "DoubleGlassBottomSingle.png": {
+      "frame": {
+        "x": 125,
+        "y": 0,
+        "w": 55,
+        "h": 36
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 55,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 55,
+        "h": 36
       },
       "pivot": {
         "x": 0.5,
@@ -650,8 +530,8 @@
     },
     "DoubleGlassTopSingle.png": {
       "frame": {
-        "x": 148,
-        "y": 146,
+        "x": 118,
+        "y": 231,
         "w": 54,
         "h": 42
       },
@@ -672,24 +552,48 @@
         "y": 0.5
       }
     },
-    "CheckpointAnimationBlack.png": {
+    "accelerator.png": {
       "frame": {
-        "x": 180,
-        "y": 102,
-        "w": 44,
-        "h": 40
+        "x": 118,
+        "y": 285,
+        "w": 47,
+        "h": 39
       },
       "rotated": true,
-      "trimmed": true,
+      "trimmed": false,
       "spriteSourceSize": {
-        "x": 22,
-        "y": 19,
-        "w": 44,
-        "h": 40
+        "x": 0,
+        "y": 0,
+        "w": 47,
+        "h": 39
       },
       "sourceSize": {
-        "w": 88,
-        "h": 79
+        "w": 47,
+        "h": 39
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "BridgeBY002.png": {
+      "frame": {
+        "x": 157,
+        "y": 285,
+        "w": 47,
+        "h": 35
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 47,
+        "h": 35
+      },
+      "sourceSize": {
+        "w": 47,
+        "h": 35
       },
       "pivot": {
         "x": 0.5,
@@ -698,8 +602,8 @@
     },
     "BridgeBY003.png": {
       "frame": {
-        "x": 148,
-        "y": 200,
+        "x": 192,
+        "y": 285,
         "w": 47,
         "h": 35
       },
@@ -722,8 +626,8 @@
     },
     "GreenLightCube.png": {
       "frame": {
-        "x": 150,
-        "y": 247,
+        "x": 227,
+        "y": 285,
         "w": 45,
         "h": 45
       },
@@ -746,8 +650,8 @@
     },
     "Light02.png": {
       "frame": {
-        "x": 183,
-        "y": 200,
+        "x": 160,
+        "y": 231,
         "w": 45,
         "h": 45
       },
@@ -768,10 +672,82 @@
         "y": 0.5
       }
     },
+    "OrangeLight02.png": {
+      "frame": {
+        "x": 205,
+        "y": 231,
+        "w": 45,
+        "h": 44
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 45,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 45,
+        "h": 44
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "GreyVerticalBottom.png": {
+      "frame": {
+        "x": 197,
+        "y": 332,
+        "w": 45,
+        "h": 43
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 45,
+        "h": 43
+      },
+      "sourceSize": {
+        "w": 45,
+        "h": 43
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "GreyVerticalTop.png": {
+      "frame": {
+        "x": 227,
+        "y": 377,
+        "w": 45,
+        "h": 43
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 45,
+        "h": 43
+      },
+      "sourceSize": {
+        "w": 45,
+        "h": 43
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
     "OrangeLight01.png": {
       "frame": {
-        "x": 190,
-        "y": 146,
+        "x": 240,
+        "y": 330,
         "w": 41,
         "h": 45
       },
@@ -794,8 +770,8 @@
     },
     "Light05.png": {
       "frame": {
-        "x": 231,
-        "y": 146,
+        "x": 270,
+        "y": 375,
         "w": 40,
         "h": 45
       },
@@ -816,10 +792,34 @@
         "y": 0.5
       }
     },
+    "LightCubeBrown.png": {
+      "frame": {
+        "x": 291,
+        "y": 420,
+        "w": 45,
+        "h": 39
+      },
+      "rotated": true,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 45,
+        "h": 39
+      },
+      "sourceSize": {
+        "w": 45,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
     "LightCubeGray.png": {
       "frame": {
-        "x": 215,
-        "y": 0,
+        "x": 310,
+        "y": 465,
         "w": 45,
         "h": 39
       },
@@ -842,8 +842,8 @@
     },
     "YellowSingle.png": {
       "frame": {
-        "x": 215,
-        "y": 45,
+        "x": 349,
+        "y": 465,
         "w": 45,
         "h": 39
       },
@@ -866,8 +866,8 @@
     },
     "BlueSingle.png": {
       "frame": {
-        "x": 220,
-        "y": 90,
+        "x": 155,
+        "y": 55,
         "w": 45,
         "h": 38
       },
@@ -890,8 +890,8 @@
     },
     "BlueVerticalBottom.png": {
       "frame": {
-        "x": 258,
-        "y": 90,
+        "x": 177,
+        "y": 0,
         "w": 45,
         "h": 38
       },
@@ -914,7 +914,7 @@
     },
     "BlueVerticalTop.png": {
       "frame": {
-        "x": 254,
+        "x": 215,
         "y": 0,
         "w": 45,
         "h": 38
@@ -938,8 +938,8 @@
     },
     "CreamySingle.png": {
       "frame": {
-        "x": 254,
-        "y": 45,
+        "x": 155,
+        "y": 100,
         "w": 45,
         "h": 38
       },
@@ -962,12 +962,12 @@
     },
     "GlassTunnelSingleTop.png": {
       "frame": {
-        "x": 292,
-        "y": 0,
+        "x": 155,
+        "y": 145,
         "w": 45,
         "h": 38
       },
-      "rotated": true,
+      "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
@@ -986,8 +986,8 @@
     },
     "OrangeSingle.png": {
       "frame": {
-        "x": 292,
-        "y": 45,
+        "x": 177,
+        "y": 183,
         "w": 45,
         "h": 38
       },
@@ -1010,8 +1010,8 @@
     },
     "OrangeSingle02.png": {
       "frame": {
-        "x": 330,
-        "y": 45,
+        "x": 215,
+        "y": 145,
         "w": 45,
         "h": 38
       },
@@ -1032,10 +1032,34 @@
         "y": 0.5
       }
     },
+    "Checkpoint002.png": {
+      "frame": {
+        "x": 215,
+        "y": 190,
+        "w": 40,
+        "h": 41
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 0,
+        "w": 40,
+        "h": 41
+      },
+      "sourceSize": {
+        "w": 42,
+        "h": 41
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
     "OrangeSingleLight.png": {
       "frame": {
-        "x": 330,
-        "y": 0,
+        "x": 249,
+        "y": 231,
         "w": 45,
         "h": 38
       },
@@ -1058,8 +1082,8 @@
     },
     "OrangeVerticalBottom.png": {
       "frame": {
-        "x": 180,
-        "y": 292,
+        "x": 287,
+        "y": 231,
         "w": 45,
         "h": 38
       },
@@ -1082,8 +1106,8 @@
     },
     "OrangeVerticalBottom02.png": {
       "frame": {
-        "x": 195,
-        "y": 245,
+        "x": 325,
+        "y": 231,
         "w": 45,
         "h": 38
       },
@@ -1106,8 +1130,8 @@
     },
     "OrangeVerticalBottom02Light.png": {
       "frame": {
-        "x": 228,
-        "y": 191,
+        "x": 363,
+        "y": 231,
         "w": 45,
         "h": 38
       },
@@ -1130,8 +1154,8 @@
     },
     "OrangeVerticalTop.png": {
       "frame": {
-        "x": 180,
-        "y": 337,
+        "x": 401,
+        "y": 231,
         "w": 45,
         "h": 38
       },
@@ -1152,58 +1176,10 @@
         "y": 0.5
       }
     },
-    "GlassTunnelSingleMiddleFront.png": {
-      "frame": {
-        "x": 180,
-        "y": 382,
-        "w": 38,
-        "h": 33
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 38,
-        "h": 33
-      },
-      "sourceSize": {
-        "w": 38,
-        "h": 33
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "GlassTunnelSingle.png": {
-      "frame": {
-        "x": 218,
-        "y": 382,
-        "w": 45,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 45,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 45,
-        "h": 32
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
     "OrangeVerticalTop02.png": {
       "frame": {
-        "x": 218,
-        "y": 290,
+        "x": 272,
+        "y": 276,
         "w": 45,
         "h": 38
       },
@@ -1226,8 +1202,8 @@
     },
     "OrangeVerticalTopLight.png": {
       "frame": {
-        "x": 233,
-        "y": 335,
+        "x": 281,
+        "y": 321,
         "w": 45,
         "h": 38
       },
@@ -1248,48 +1224,48 @@
         "y": 0.5
       }
     },
-    "Light01.png": {
+    "CheckpointAnimation.png": {
       "frame": {
-        "x": 263,
-        "y": 380,
-        "w": 29,
-        "h": 35
+        "x": 310,
+        "y": 276,
+        "w": 44,
+        "h": 40
       },
-      "rotated": false,
-      "trimmed": false,
+      "rotated": true,
+      "trimmed": true,
       "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 29,
-        "h": 35
+        "x": 22,
+        "y": 20,
+        "w": 44,
+        "h": 40
       },
       "sourceSize": {
-        "w": 29,
-        "h": 35
+        "w": 88,
+        "h": 79
       },
       "pivot": {
         "x": 0.5,
         "y": 0.5
       }
     },
-    "Block.png": {
+    "CheckpointAnimationBlack.png": {
       "frame": {
-        "x": 292,
-        "y": 380,
-        "w": 34,
-        "h": 34
+        "x": 310,
+        "y": 366,
+        "w": 44,
+        "h": 40
       },
-      "rotated": false,
-      "trimmed": false,
+      "rotated": true,
+      "trimmed": true,
       "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 34,
-        "h": 34
+        "x": 22,
+        "y": 19,
+        "w": 44,
+        "h": 40
       },
       "sourceSize": {
-        "w": 34,
-        "h": 34
+        "w": 88,
+        "h": 79
       },
       "pivot": {
         "x": 0.5,
@@ -1298,8 +1274,8 @@
     },
     "CRLightCubeGray.png": {
       "frame": {
-        "x": 233,
-        "y": 236,
+        "x": 319,
+        "y": 320,
         "w": 44,
         "h": 39
       },
@@ -1322,8 +1298,8 @@
     },
     "YellowVerticalBottom.png": {
       "frame": {
-        "x": 266,
-        "y": 191,
+        "x": 350,
+        "y": 276,
         "w": 44,
         "h": 39
       },
@@ -1346,8 +1322,8 @@
     },
     "174.png": {
       "frame": {
-        "x": 256,
-        "y": 280,
+        "x": 330,
+        "y": 410,
         "w": 44,
         "h": 38
       },
@@ -1370,8 +1346,8 @@
     },
     "BlueVerticalMiddle.png": {
       "frame": {
-        "x": 272,
-        "y": 235,
+        "x": 350,
+        "y": 364,
         "w": 44,
         "h": 38
       },
@@ -1394,8 +1370,8 @@
     },
     "GreyVerticalMiddle.png": {
       "frame": {
-        "x": 294,
-        "y": 279,
+        "x": 358,
+        "y": 320,
         "w": 44,
         "h": 38
       },
@@ -1418,8 +1394,8 @@
     },
     "OrangeVerticalMiddle.png": {
       "frame": {
-        "x": 271,
-        "y": 135,
+        "x": 389,
+        "y": 276,
         "w": 44,
         "h": 38
       },
@@ -1442,8 +1418,8 @@
     },
     "OrangeVerticalMiddle02.png": {
       "frame": {
-        "x": 305,
-        "y": 90,
+        "x": 368,
+        "y": 408,
         "w": 44,
         "h": 38
       },
@@ -1466,8 +1442,8 @@
     },
     "OrangeVerticalMiddleLight.png": {
       "frame": {
-        "x": 305,
-        "y": 179,
+        "x": 388,
+        "y": 364,
         "w": 44,
         "h": 38
       },
@@ -1490,8 +1466,8 @@
     },
     "YellowVerticalTop.png": {
       "frame": {
-        "x": 309,
-        "y": 134,
+        "x": 406,
+        "y": 320,
         "w": 44,
         "h": 38
       },
@@ -1514,8 +1490,8 @@
     },
     "Light07.png": {
       "frame": {
-        "x": 343,
-        "y": 90,
+        "x": 444,
+        "y": 320,
         "w": 36,
         "h": 44
       },
@@ -1538,8 +1514,8 @@
     },
     "YellowVerticalMiddle.png": {
       "frame": {
-        "x": 310,
-        "y": 223,
+        "x": 480,
+        "y": 320,
         "w": 42,
         "h": 36
       },
@@ -1560,34 +1536,10 @@
         "y": 0.5
       }
     },
-    "Checkpoint002.png": {
-      "frame": {
-        "x": 343,
-        "y": 178,
-        "w": 40,
-        "h": 41
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 1,
-        "y": 0,
-        "w": 40,
-        "h": 41
-      },
-      "sourceSize": {
-        "w": 42,
-        "h": 41
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
     "Checkpoint001.png": {
       "frame": {
-        "x": 347,
-        "y": 134,
+        "x": 427,
+        "y": 276,
         "w": 39,
         "h": 40
       },
@@ -1608,48 +1560,24 @@
         "y": 0.5
       }
     },
-    "CheckpointMarker.png": {
+    "GlassTunnelSingleBottomFront.png": {
       "frame": {
-        "x": 271,
-        "y": 324,
-        "w": 34,
-        "h": 34
+        "x": 466,
+        "y": 276,
+        "w": 38,
+        "h": 35
       },
-      "rotated": false,
+      "rotated": true,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 34,
-        "h": 34
+        "w": 38,
+        "h": 35
       },
       "sourceSize": {
-        "w": 34,
-        "h": 34
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "Light08.png": {
-      "frame": {
-        "x": 305,
-        "y": 323,
-        "w": 28,
-        "h": 28
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 28,
-        "h": 28
-      },
-      "sourceSize": {
-        "w": 28,
-        "h": 28
+        "w": 38,
+        "h": 35
       },
       "pivot": {
         "x": 0.5,
@@ -1658,8 +1586,8 @@
     },
     "checkpoint.png": {
       "frame": {
-        "x": 83,
-        "y": 415,
+        "x": 118,
+        "y": 285,
         "w": 47,
         "h": 39
       },
@@ -1687,7 +1615,7 @@
     "image": "texture-2.png",
     "format": "RGBA8888",
     "size": {
-      "w": 386,
+      "w": 516,
       "h": 511
     },
     "scale": 1

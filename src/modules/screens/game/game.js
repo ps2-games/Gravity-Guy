@@ -6,8 +6,8 @@ import Gamepad from "../../../shared/gamepad.js"
 import ScreenBase from "../screenBase.js";
 import StateManager from "../../stateManager/stateManager.js"
 import Player from "../../player/player.js"
-import TileMapRenderer from "./tileMapRenderer.js"
 import Camera from "../../camera/camera.js"
+import TileMapRenderer from "../../tileMap/tileMap.js"
 
 export default class GameScreen extends ScreenBase {
     constructor() {
@@ -28,13 +28,24 @@ export default class GameScreen extends ScreenBase {
         super.onEnter(fromState);
         this._initColliders();
         this._initAssets();
-        
+
         const initialX = SCREEN_WIDTH / 2;
         const initialY = SCREEN_HEIGHT / 2;
         this.player = new Player({ PLAYER_PORT: PLAYER_ONE_PORT, initialX, initialY })
 
-        const mapData = JSON.parse(std.loadFile(`${ASSETS_PATH.MAPS}/sp1.json`));
-        this.tileMapRenderer = new TileMapRenderer(mapData, SCREEN_WIDTH, SCREEN_HEIGHT);
+        this.tileMapRenderer = new TileMapRenderer(
+            [
+                JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp1.json")),
+                JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp2.json")),
+                JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp3.json")),
+                JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp4.json")),
+                JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp5.json")),
+                JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp6.json")),
+                JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp7.json"))
+            ],
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT
+        );
 
         if (!this.STREAM_GAME.playing()) {
             this.STREAM_GAME.play();
@@ -43,13 +54,12 @@ export default class GameScreen extends ScreenBase {
         setAnimation(this.BTN_RESUME_PAUSE, "hover");
         setAnimation(this.BTN_RETURN_MENU, "normal");
 
-        if (this.tileMapRenderer && this.tileMapRenderer.getMapSize) {
-            const mapSize = this.tileMapRenderer.getMapSize();
-            this.camera.setBounds(0, mapSize.width, 0, mapSize.height);
-        }
-
         this.camera.x = initialX - SCREEN_WIDTH / 2;
         this.camera.y = initialY - SCREEN_HEIGHT / 2;
+
+
+        console.log("Initializing TileMap system...");
+        TileMap.init();
     }
 
     _initColliders() {
@@ -259,18 +269,6 @@ export default class GameScreen extends ScreenBase {
             Collision.toggleDebug();
         }
 
-        if (Gamepad.player(PLAYER_ONE_PORT).justPressed(Pads.L1)) {
-            const stats = this.tileMapRenderer.getStats();
-            console.log('TileMapRenderer Stats:', JSON.stringify(stats, null, 2));
-            console.log('Camera:', { x: this.camera.x, y: this.camera.y });
-            console.log('Player:', this.player.movement.position);
-            
-            console.log('Ground colliders:', this.groundColliders.map(id => {
-                const collider = Collision.get(id);
-                return collider ? { id, tags: collider.tags, x: collider.x, y: collider.y } : null;
-            }));
-        }
-
         if (!this.isPaused) {
             if (Gamepad.player(PLAYER_ONE_PORT).pressed(Pads.RIGHT)) {
                 this.player.movement.position.x += 5;
@@ -341,6 +339,10 @@ export default class GameScreen extends ScreenBase {
     updateCamera() {
         if (this.player) {
             this.camera.update(this.player.movement.position.x, this.player.movement.position.y);
+
+            if (this.tileMapRenderer) {
+                this.tileMapRenderer.updateCamera(this.camera.x, this.camera.y);
+            }
         }
     }
 
@@ -356,10 +358,6 @@ export default class GameScreen extends ScreenBase {
                 this.updateCamera();
 
                 this.updateCollidersWithCamera();
-
-                if (this.tileMapRenderer) {
-                    this.tileMapRenderer.update(this.camera.x, this.camera.y);
-                }
             }
             Collision.check();
         }
@@ -376,7 +374,7 @@ export default class GameScreen extends ScreenBase {
         this.drawParallaxTop(parallaxDeltaTime);
 
         if (this.tileMapRenderer) {
-            this.tileMapRenderer.render(this.camera.x, this.camera.y);
+            this.tileMapRenderer.render();
         }
 
         if (this.player) {
@@ -391,9 +389,9 @@ export default class GameScreen extends ScreenBase {
             const screenCenterY = SCREEN_HEIGHT / 2;
             const safeZoneTop = screenCenterY - this.safeZoneHeight / 2;
             const safeZoneBottom = screenCenterY + this.safeZoneHeight / 2;
-            
+
             Draw.rect(0, safeZoneTop, SCREEN_WIDTH, this.safeZoneHeight, Color.new(0, 255, 0, 30));
-            
+
             Draw.line(0, safeZoneTop, SCREEN_WIDTH, safeZoneTop, Color.new(0, 255, 0, 150));
             Draw.line(0, safeZoneBottom, SCREEN_WIDTH, safeZoneBottom, Color.new(0, 255, 0, 150));
         }
@@ -434,7 +432,7 @@ export default class GameScreen extends ScreenBase {
         this.groundColliders = [];
 
         if (this.tileMapRenderer) {
-            this.tileMapRenderer.free();
+            this.tileMapRenderer.destroy();
             this.tileMapRenderer = null;
         }
 

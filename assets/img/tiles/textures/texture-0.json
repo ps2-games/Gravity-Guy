@@ -480,24 +480,24 @@
         "y": 0.5
       }
     },
-    "OrangeLight03.png": {
+    "FinalTunnelWindow.png": {
       "frame": {
         "x": 615,
         "y": 490,
-        "w": 11,
-        "h": 17
+        "w": 20,
+        "h": 20
       },
       "rotated": false,
-      "trimmed": true,
+      "trimmed": false,
       "spriteSourceSize": {
-        "x": 1,
+        "x": 0,
         "y": 0,
-        "w": 11,
-        "h": 17
+        "w": 20,
+        "h": 20
       },
       "sourceSize": {
-        "w": 12,
-        "h": 17
+        "w": 20,
+        "h": 20
       },
       "pivot": {
         "x": 0.5,
@@ -624,6 +624,30 @@
         "y": 0.5
       }
     },
+    "OrangeLight03.png": {
+      "frame": {
+        "x": 481,
+        "y": 201,
+        "w": 11,
+        "h": 17
+      },
+      "rotated": true,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 0,
+        "w": 11,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 17
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
     "DoubleGlassTop.png": {
       "frame": {
         "x": 260,
@@ -675,7 +699,7 @@
     "DarkWallLight02.png": {
       "frame": {
         "x": 478,
-        "y": 201,
+        "y": 212,
         "w": 41,
         "h": 20
       },
@@ -720,34 +744,10 @@
         "y": 0.5
       }
     },
-    "DarkGlassMiddleLeft.png": {
-      "frame": {
-        "x": 478,
-        "y": 242,
-        "w": 19,
-        "h": 35
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 19,
-        "h": 35
-      },
-      "sourceSize": {
-        "w": 19,
-        "h": 35
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
     "002.png": {
       "frame": {
         "x": 260,
-        "y": 250,
+        "y": 253,
         "w": 212,
         "h": 38
       },
@@ -771,7 +771,7 @@
     "BlueDoorLight.png": {
       "frame": {
         "x": 298,
-        "y": 250,
+        "y": 253,
         "w": 210,
         "h": 77
       },
@@ -816,30 +816,6 @@
         "y": 0.5
       }
     },
-    "Light09.png": {
-      "frame": {
-        "x": 477,
-        "y": 277,
-        "w": 115,
-        "h": 21
-      },
-      "rotated": true,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 1,
-        "y": 1,
-        "w": 115,
-        "h": 21
-      },
-      "sourceSize": {
-        "w": 117,
-        "h": 23
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
     "shadow.png": {
       "frame": {
         "x": 375,
@@ -867,69 +843,117 @@
     "DarkPipeTop.png": {
       "frame": {
         "x": 402,
-        "y": 392,
-        "w": 96,
-        "h": 36
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 96,
-        "h": 36
-      },
-      "sourceSize": {
-        "w": 96,
-        "h": 36
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "Blue02.png": {
-      "frame": {
-        "x": 402,
-        "y": 428,
-        "w": 81,
-        "h": 38
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 81,
-        "h": 38
-      },
-      "sourceSize": {
-        "w": 81,
-        "h": 38
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "Light03.png": {
-      "frame": {
-        "x": 402,
         "y": 347,
-        "w": 54,
-        "h": 45
+        "w": 96,
+        "h": 36
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 54,
-        "h": 45
+        "w": 96,
+        "h": 36
       },
       "sourceSize": {
-        "w": 54,
-        "h": 45
+        "w": 96,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "DarkGlassMiddleLeft.png": {
+      "frame": {
+        "x": 477,
+        "y": 383,
+        "w": 19,
+        "h": 35
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 19,
+        "h": 35
+      },
+      "sourceSize": {
+        "w": 19,
+        "h": 35
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "004.png": {
+      "frame": {
+        "x": 402,
+        "y": 418,
+        "w": 48,
+        "h": 67
+      },
+      "rotated": true,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 68
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "BridgeBYLeftFRONT.png": {
+      "frame": {
+        "x": 469,
+        "y": 418,
+        "w": 42,
+        "h": 29
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 42,
+        "h": 29
+      },
+      "sourceSize": {
+        "w": 42,
+        "h": 29
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "BridgeBY001.png": {
+      "frame": {
+        "x": 402,
+        "y": 383,
+        "w": 48,
+        "h": 35
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 35
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 35
       },
       "pivot": {
         "x": 0.5,
@@ -938,8 +962,8 @@
     },
     "DarkGlassMiddleRight.png": {
       "frame": {
-        "x": 456,
-        "y": 347,
+        "x": 450,
+        "y": 383,
         "w": 18,
         "h": 35
       },
@@ -954,6 +978,54 @@
       "sourceSize": {
         "w": 18,
         "h": 35
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "TOMALAQUEJAALMOCASTE.png": {
+      "frame": {
+        "x": 477,
+        "y": 253,
+        "w": 47,
+        "h": 14
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 47,
+        "h": 14
+      },
+      "sourceSize": {
+        "w": 47,
+        "h": 14
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "DarkWallLight04.png": {
+      "frame": {
+        "x": 477,
+        "y": 300,
+        "w": 10,
+        "h": 10
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 10,
+        "h": 10
+      },
+      "sourceSize": {
+        "w": 10,
+        "h": 10
       },
       "pivot": {
         "x": 0.5,
