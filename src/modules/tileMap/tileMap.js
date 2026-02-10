@@ -223,6 +223,7 @@ export default class TileMapRenderer {
 
     render(offsetX = 0, offsetY = 0) {
         TileMap.begin();
+        TileMap.setCamera(-this.cameraX, -this.cameraY)
 
         if (this.instances.background) {
             this.instances.background.render(offsetX, offsetY);
