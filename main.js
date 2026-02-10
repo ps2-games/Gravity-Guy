@@ -20,8 +20,6 @@ function initializeGame() {
         screen.init();
     });
 
-    TileMap.init();
-
     StateManager.setState(GAME_STATE.MAIN_MENU);
 }
 

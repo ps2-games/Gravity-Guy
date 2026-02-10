@@ -56,10 +56,6 @@ export default class GameScreen extends ScreenBase {
 
         this.camera.x = initialX - SCREEN_WIDTH / 2;
         this.camera.y = initialY - SCREEN_HEIGHT / 2;
-
-
-        console.log("Initializing TileMap system...");
-        TileMap.init();
     }
 
     _initColliders() {
