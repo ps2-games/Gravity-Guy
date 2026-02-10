@@ -75,7 +75,7 @@ export default class TileMapRenderer {
     }
 
     _createDescriptor() {
-        const framesCounts = this.tileConfigs.map(cfg => cfg.frames.length);
+        const framesCounts = this.tileConfigs.map(cfg => Object.keys(cfg.frames).length);
 
         let acc = 0;
         const offsets = framesCounts.map(count => (acc += count) - 1);
