@@ -1,18 +1,16 @@
-import { ASSETS_PATH } from "../../shared/constants.js";
+import { ASSETS_PATH, SCREEN_HEIGHT, SCREEN_WIDTH} from "../../shared/constants.js";
 
 export default class TileMapRenderer {
-    constructor(mapDataArray, viewportWidth, viewportHeight) {
+    constructor(mapDataArray) {
         console.log("=== TileMapRenderer Constructor ===");
-        console.log("Viewport:", viewportWidth, "x", viewportHeight);
+        console.log("Viewport:", SCREEN_WIDTH, "x", SCREEN_HEIGHT);
         console.log("Map data count:", mapDataArray.length);
 
-        this.viewportWidth = viewportWidth;
-        this.viewportHeight = viewportHeight;
         this.cameraX = 0;
         this.cameraY = 0;
         this.cullingMargin = 64;
         this.FLASH_HEIGHT = 480;
-        this.scaleY = this.viewportHeight / this.FLASH_HEIGHT;
+        this.scaleY = SCREEN_HEIGHT / this.FLASH_HEIGHT;
 
         console.log("Loading tile configs...");
         this.tileConfigs = [
@@ -197,7 +195,7 @@ export default class TileMapRenderer {
         const GROUND_LEVEL = 425;
         const SCALE_FACTOR = 0.641509;
         const Y_OFFSET = 36;
-        const PS2_Y_OFFSET = this.viewportHeight === 448 ? 30 : 0;
+        const PS2_Y_OFFSET = SCREEN_HEIGHT === 448 ? 30 : 0;
 
         let successCount = 0;
         let failCount = 0;
@@ -325,9 +323,9 @@ export default class TileMapRenderer {
         const margin = this.cullingMargin;
         return (
             sprite.x + sprite.w >= this.cameraX - margin &&
-            sprite.x <= this.cameraX + this.viewportWidth + margin &&
+            sprite.x <= this.cameraX + SCREEN_WIDTH + margin &&
             sprite.y + sprite.h >= this.cameraY - margin &&
-            sprite.y <= this.cameraY + this.viewportHeight + margin
+            sprite.y <= this.cameraY + SCREEN_HEIGHT + margin
         );
     }
 
