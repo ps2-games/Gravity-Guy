@@ -36,12 +36,12 @@ export default class GameScreen extends ScreenBase {
         this.tileMapRenderer = new TileMapRenderer(
             [
                 JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp1.json")),
-                JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp2.json")),
-                JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp3.json")),
-                JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp4.json")),
-                JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp5.json")),
-                JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp6.json")),
-                JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp7.json"))
+                // JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp2.json")),
+                // JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp3.json")),
+                // JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp4.json")),
+                // JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp5.json")),
+                // JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp6.json")),
+                // JSON.parse(std.loadFile(ASSETS_PATH.MAPS + "/sp7.json"))
             ],
             SCREEN_WIDTH,
             SCREEN_HEIGHT

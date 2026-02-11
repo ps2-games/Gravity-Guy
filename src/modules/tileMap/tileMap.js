@@ -20,190 +20,126 @@ export default class TileMapRenderer {
         ];
 
         this.layers = this._processMapData(mapDataArray);
-        this.descriptor = this._createDescriptor();
         this.instances = this._createInstances();
     }
 
     _processMapData(mapDataArray) {
         const allVisuals = [];
-        let totalBackgroundCount = 0;
-        let totalForegroundCount = 0;
 
         for (let i = 0; i < mapDataArray.length; i++) {
             const mapData = mapDataArray[i];
 
             if (mapData.visualInfo) {
-                const bgVisuals = mapData.visualInfo.map(v => {
-                    const imageId = v.imageId || v.animId;
-                    const finalImageId = imageId.endsWith('.png') ? imageId : imageId + '.png';
-
-                    return {
-                        ...v,
-                        layerType: 'background',
-                        imageId: finalImageId
-                    };
-                });
-
-                allVisuals.push(...bgVisuals);
-                totalBackgroundCount += bgVisuals.length;
+                allVisuals.push(...mapData.visualInfo.map(v => ({
+                    ...v,
+                    layerType: 'background',
+                    imageId: (v.imageId || v.animId).endsWith('.png') ? (v.imageId || v.animId) : (v.imageId || v.animId) + '.png'
+                })));
             }
 
             if (mapData.frontVisualInfo) {
-                const fgVisuals = mapData.frontVisualInfo.map(v => {
-                    const imageId = v.imageId || v.animId;
-                    const finalImageId = imageId.endsWith('.png') ? imageId : imageId + '.png';
-
-                    return {
-                        ...v,
-                        layerType: 'foreground',
-                        imageId: finalImageId
-                    };
-                });
-                allVisuals.push(...fgVisuals);
-                totalForegroundCount += fgVisuals.length;
+                allVisuals.push(...mapData.frontVisualInfo.map(v => ({
+                    ...v,
+                    layerType: 'foreground',
+                    imageId: (v.imageId || v.animId).endsWith('.png') ? (v.imageId || v.animId) : (v.imageId || v.animId) + '.png'
+                })));
             }
         }
 
         allVisuals.sort((a, b) => a.depth - b.depth);
 
-        const layers = {
+        return {
             background: allVisuals.filter(v => v.layerType === 'background'),
             foreground: allVisuals.filter(v => v.layerType === 'foreground')
         };
-
-        return layers;
     }
 
-    _createDescriptor() {
-        const { offsets } = this.tileConfigs.reduce(
-            (acc, cfg) => {
-                const count = Object.keys(cfg.frames).length;
-                acc.sum += count;
-                acc.offsets.push(acc.sum - 1);
-                return acc;
-            },
-            { sum: 0, offsets: [] }
-        );
-
-        const descriptor = new TileMap.Descriptor({
+    _createDescriptor(offsets) {
+        return new TileMap.Descriptor({
             textures: this.SPRITE_SHEETS,
-            materials: [
-                {
-                    texture_index: 0,
-                    blend_mode: Screen.alphaEquation(
-                        Screen.SRC_RGB,
-                        Screen.DST_RGB,
-                        Screen.SRC_ALPHA,
-                        Screen.DST_RGB,
-                        0
-                    ),
-                    end_offset: offsets[0]
-                },
-                {
-                    texture_index: 1,
-                    blend_mode: Screen.alphaEquation(
-                        Screen.SRC_RGB,
-                        Screen.DST_RGB,
-                        Screen.SRC_ALPHA,
-                        Screen.DST_RGB,
-                        0
-                    ),
-                    end_offset: offsets[1]
-                },
-                {
-                    texture_index: 2,
-                    blend_mode: Screen.alphaEquation(
-                        Screen.SRC_RGB,
-                        Screen.DST_RGB,
-                        Screen.SRC_ALPHA,
-                        Screen.DST_RGB,
-                        0
-                    ),
-                    end_offset: offsets[2]
-                }
-            ]
+            materials: offsets.map((offset, idx) => ({
+                texture_index: idx,
+                blend_mode: Screen.alphaEquation(
+                    Screen.SRC_RGB, Screen.DST_RGB, 
+                    Screen.SRC_ALPHA, Screen.DST_RGB, 
+                    0
+                ),
+                end_offset: offset
+            }))
         });
-
-        return descriptor;
     }
 
-    _createSpriteData(visualInfo) {
+    _getTileConfig(tileId) {
+        for (let i = 0; i < this.tileConfigs.length; i++) {
+            if (this.tileConfigs[i].frames && this.tileConfigs[i].frames[tileId]) {
+                return { config: this.tileConfigs[i].frames[tileId], textureIndex: i };
+            }
+        }
+        return null;
+    }
+
+    _prepareLayerSprites(visualInfo) {
         const GROUND_LEVEL = 425;
         const SCALE_FACTOR = 0.641509;
         const Y_OFFSET = 36;
         const PS2_Y_OFFSET = SCREEN_HEIGHT === 448 ? 30 : 0;
 
-        let successCount = 0;
-        let failCount = 0;
-        const failedTiles = [];
+        const spritesByTexture = [[], [], []];
 
-        const sprites = visualInfo.map((v) => {
-            const tileId = v.imageId;
-            const tileConfig = this._getTileConfig(tileId);
+        visualInfo.forEach((v) => {
+            const res = this._getTileConfig(v.imageId);
+            if (!res) return;
 
-            if (!tileConfig) {
-                failCount++;
-                failedTiles.push(tileId);
-                return null;
-            }
+            const { config, textureIndex } = res;
 
-            v.convertedX = v.posX * SCALE_FACTOR;
+            const convertedX = v.posX * SCALE_FACTOR;
             const flashY = GROUND_LEVEL - (v.posY * SCALE_FACTOR) + Y_OFFSET;
-            v.convertedY = (flashY * this.scaleY) + PS2_Y_OFFSET;
+            const convertedY = (flashY * this.scaleY) + PS2_Y_OFFSET;
 
-            const sprite = {
-                x: v.convertedX,
-                y: v.convertedY,
-                w: tileConfig.w * (v.scaleX || 1),
-                h: tileConfig.h * (v.scaleY || 1),
+            const trimX = (config.spriteSourceSize.x || 0) * SCALE_FACTOR;
+            const trimY = (config.spriteSourceSize.y || 0) * SCALE_FACTOR;
+
+            spritesByTexture[textureIndex].push({
+                x: convertedX + trimX,
+                y: convertedY + trimY,
+                w: config.frame.w * (v.scaleX || 1),
+                h: config.frame.h * (v.scaleY || 1),
                 zindex: v.depth,
-                u1: tileConfig.x,
-                v1: tileConfig.y,
-                u2: tileConfig.x + tileConfig.w,
-                v2: tileConfig.y + tileConfig.h,
-                r: 128,
-                g: 128,
-                b: 128,
-                a: 128
-            };
+                u1: config.frame.x,
+                v1: config.frame.y,
+                u2: config.frame.x + config.frame.w,
+                v2: config.frame.y + config.frame.h,
+                r: 128, g: 128, b: 128, a: 128
+            });
+        });
 
-            successCount++;
+        const allSprites = [...spritesByTexture[0], ...spritesByTexture[1], ...spritesByTexture[2]];
 
-            return sprite;
-        }).filter(sprite => sprite !== null);
+        const offsets = [
+            spritesByTexture[0].length - 1,
+            spritesByTexture[0].length + spritesByTexture[1].length - 1,
+            spritesByTexture[0].length + spritesByTexture[1].length + spritesByTexture[2].length - 1
+        ].map(o => Math.max(0, o));
 
-        return sprites;
-    }
-
-    _getTileConfig(tileId) {
-        for (let i = 0; i < this.tileConfigs.length; i++) {
-            const config = this.tileConfigs[i];
-            if (config.frames && config.frames[tileId]) {
-                return config.frames[tileId].frame;
-            }
-        }
-
-        return null;
+        return { allSprites, offsets };
     }
 
     _createInstances() {
-        const bgSprites = this._createSpriteData(this.layers.background);
-        const fgSprites = this._createSpriteData(this.layers.foreground);
-
-        const instances = {
-            background: new TileMap.Instance({
-                descriptor: this.descriptor,
-                spriteBuffer: TileMap.SpriteBuffer.fromObjects(bgSprites)
-            }),
-            foreground: new TileMap.Instance({
-                descriptor: this.descriptor,
-                spriteBuffer: TileMap.SpriteBuffer.fromObjects(fgSprites)
-            })
-        };
-
         TileMap.init();
 
-        return instances;
+        const bgData = this._prepareLayerSprites(this.layers.background);
+        const fgData = this._prepareLayerSprites(this.layers.foreground);
+
+        return {
+            background: new TileMap.Instance({
+                descriptor: this._createDescriptor(bgData.offsets),
+                spriteBuffer: TileMap.SpriteBuffer.fromObjects(bgData.allSprites)
+            }),
+            foreground: new TileMap.Instance({
+                descriptor: this._createDescriptor(fgData.offsets),
+                spriteBuffer: TileMap.SpriteBuffer.fromObjects(fgData.allSprites)
+            })
+        };
     }
 
     updateCamera(cameraX, cameraY) {
@@ -211,26 +147,13 @@ export default class TileMapRenderer {
         this.cameraY = cameraY;
     }
 
-    _isVisible(sprite) {
-        const margin = 350;
-        return (
-            sprite.x + sprite.w >= this.cameraX - margin &&
-            sprite.x <= this.cameraX + SCREEN_WIDTH + margin &&
-            sprite.y + sprite.h >= this.cameraY - margin &&
-            sprite.y <= this.cameraY + SCREEN_HEIGHT + margin
-        );
-    }
-
     render(offsetX = 0, offsetY = 0) {
         TileMap.begin();
-        TileMap.setCamera(-this.cameraX, -this.cameraY)
 
-        if (this.instances.background) {
-            this.instances.background.render(offsetX, offsetY);
-        }
-        if (this.instances.foreground) {
-            this.instances.foreground.render(offsetX, offsetY);
-        }
+        TileMap.setCamera(-this.cameraX, -this.cameraY);
+
+        if (this.instances.background) this.instances.background.render(offsetX, offsetY);
+        if (this.instances.foreground) this.instances.foreground.render(offsetX, offsetY);
     }
 
     updateSprite(layerType, index, updates) {
@@ -240,27 +163,19 @@ export default class TileMapRenderer {
         const layout = TileMap.layout;
         const view = new DataView(instance.getSpriteBuffer());
         const stride = layout.stride;
-        const offsets = layout.offsets;
+        const pos = index * stride;
 
-        const setFloat = (idx, offset, value) => {
-            view.setFloat32(idx * stride + offset, value, true);
-        };
-
-        const setUint = (idx, offset, value) => {
-            view.setUint32(idx * stride + offset, value >>> 0, true);
-        };
-
-        if (updates.x !== undefined) setFloat(index, offsets.x, updates.x);
-        if (updates.y !== undefined) setFloat(index, offsets.y, updates.y);
-        if (updates.r !== undefined) setUint(index, offsets.r, updates.r);
-        if (updates.g !== undefined) setUint(index, offsets.g, updates.g);
-        if (updates.b !== undefined) setUint(index, offsets.b, updates.b);
-        if (updates.a !== undefined) setUint(index, offsets.a, updates.a);
+        if (updates.x !== undefined) view.setFloat32(pos + layout.offsets.x, updates.x, true);
+        if (updates.y !== undefined) view.setFloat32(pos + layout.offsets.y, updates.y, true);
+        if (updates.r !== undefined) view.setUint32(pos + layout.offsets.r, updates.r >>> 0, true);
+        if (updates.g !== undefined) view.setUint32(pos + layout.offsets.g, updates.g >>> 0, true);
+        if (updates.b !== undefined) view.setUint32(pos + layout.offsets.b, updates.b >>> 0, true);
+        if (updates.a !== undefined) view.setUint32(pos + layout.offsets.a, updates.a >>> 0, true);
     }
 
     destroy() {
         this.instances = null;
-        this.descriptor = null;
+        this.tileConfigs = null;
         this.layers = null;
     }
 }
