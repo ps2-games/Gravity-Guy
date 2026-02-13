@@ -6,17 +6,9 @@ export default class TileMapRenderer {
         this.cameraX = 0;
         this.cameraY = 0;
 
-        this.tileConfigs = [
-            JSON.parse(std.loadFile(ASSETS_PATH.TEXTURES + "/texture-0.json")),
-            JSON.parse(std.loadFile(ASSETS_PATH.TEXTURES + "/texture-1.json")),
-            JSON.parse(std.loadFile(ASSETS_PATH.TEXTURES + "/texture-2.json")),
-        ];
+        this.tileConfigs = [JSON.parse(std.loadFile(ASSETS_PATH.TEXTURES + "/texture.json"))];
 
-        this.SPRITE_SHEETS = [
-            ASSETS_PATH.TEXTURES + "/texture-0.png",
-            ASSETS_PATH.TEXTURES + "/texture-1.png",
-            ASSETS_PATH.TEXTURES + "/texture-2.png",
-        ];
+        this.SPRITE_SHEETS = [ASSETS_PATH.TEXTURES + "/texture.png"];
 
         this.layers = this._processMapData(mapDataArray);
         this.instances = this._createInstances();
@@ -31,7 +23,6 @@ export default class TileMapRenderer {
             if (mapData.visualInfo) {
                 allVisuals.push(...mapData.visualInfo.map(v => ({
                     ...v,
-                    layerType: 'background',
                     imageId: (v.imageId || v.animId).endsWith('.png') ? (v.imageId || v.animId) : (v.imageId || v.animId) + '.png'
                 })));
             }
@@ -39,17 +30,15 @@ export default class TileMapRenderer {
             if (mapData.frontVisualInfo) {
                 allVisuals.push(...mapData.frontVisualInfo.map(v => ({
                     ...v,
-                    layerType: 'foreground',
                     imageId: (v.imageId || v.animId).endsWith('.png') ? (v.imageId || v.animId) : (v.imageId || v.animId) + '.png'
                 })));
             }
         }
 
-        allVisuals.sort((a, b) => a.depth - b.depth);
+        allVisuals.sort((a, b) => a.depth + b.depth);
 
         return {
-            background: allVisuals.filter(v => v.layerType === 'background'),
-            foreground: allVisuals.filter(v => v.layerType === 'foreground')
+            all: allVisuals
         };
     }
 
@@ -59,8 +48,8 @@ export default class TileMapRenderer {
             materials: offsets.map((offset, idx) => ({
                 texture_index: idx,
                 blend_mode: Screen.alphaEquation(
-                    Screen.SRC_RGB, Screen.DST_RGB, 
-                    Screen.SRC_ALPHA, Screen.DST_RGB, 
+                    Screen.SRC_RGB, Screen.DST_RGB,
+                    Screen.SRC_ALPHA, Screen.DST_RGB,
                     0
                 ),
                 end_offset: offset
@@ -81,13 +70,13 @@ export default class TileMapRenderer {
         const Y_OFFSET = 36;
         const PS2_Y_OFFSET = SCREEN_HEIGHT === 448 ? 30 : 0;
 
-        const spritesByTexture = [[], [], []];
+        const allSprites = [];
 
         visualInfo.forEach((v) => {
             const res = this._getTileConfig(v.imageId);
             if (!res) return;
 
-            const { config, textureIndex } = res;
+            const { config } = res;
 
             const convertedX = v.posX * GAME_SCALE_FACTOR;
             const flashY = GAME_GROUND_LEVEL - (v.posY * GAME_SCALE_FACTOR) + Y_OFFSET;
@@ -96,7 +85,7 @@ export default class TileMapRenderer {
             const trimX = (config.spriteSourceSize.x || 0) * GAME_SCALE_FACTOR;
             const trimY = (config.spriteSourceSize.y || 0) * GAME_SCALE_FACTOR;
 
-            spritesByTexture[textureIndex].push({
+            allSprites.push({
                 x: convertedX + trimX,
                 y: convertedY + trimY,
                 w: config.frame.w * (v.scaleX || 1),
@@ -110,13 +99,9 @@ export default class TileMapRenderer {
             });
         });
 
-        const allSprites = [...spritesByTexture[0], ...spritesByTexture[1], ...spritesByTexture[2]];
+        allSprites.sort((a, b) => a.zindex + b.zindex);
 
-        const offsets = [
-            spritesByTexture[0].length - 1,
-            spritesByTexture[0].length + spritesByTexture[1].length - 1,
-            spritesByTexture[0].length + spritesByTexture[1].length + spritesByTexture[2].length - 1
-        ].map(o => Math.max(0, o));
+        const offsets = [Math.max(0, allSprites.length - 1)];
 
         return { allSprites, offsets };
     }
@@ -124,17 +109,12 @@ export default class TileMapRenderer {
     _createInstances() {
         TileMap.init();
 
-        const bgData = this._prepareLayerSprites(this.layers.background);
-        const fgData = this._prepareLayerSprites(this.layers.foreground);
+        const data = this._prepareLayerSprites(this.layers.all);
 
         return {
-            background: new TileMap.Instance({
-                descriptor: this._createDescriptor(bgData.offsets),
-                spriteBuffer: TileMap.SpriteBuffer.fromObjects(bgData.allSprites)
-            }),
-            foreground: new TileMap.Instance({
-                descriptor: this._createDescriptor(fgData.offsets),
-                spriteBuffer: TileMap.SpriteBuffer.fromObjects(fgData.allSprites)
+            all: new TileMap.Instance({
+                descriptor: this._createDescriptor(data.offsets),
+                spriteBuffer: TileMap.SpriteBuffer.fromObjects(data.allSprites)
             })
         };
     }
@@ -149,12 +129,11 @@ export default class TileMapRenderer {
 
         TileMap.setCamera(-this.cameraX, -this.cameraY);
 
-        if (this.instances.background) this.instances.background.render(offsetX, offsetY);
-        if (this.instances.foreground) this.instances.foreground.render(offsetX, offsetY);
+        if (this.instances.all) this.instances.all.render(offsetX, offsetY);
     }
 
-    updateSprite(layerType, index, updates) {
-        const instance = this.instances[layerType];
+    updateSprite(index, updates) {
+        const instance = this.instances.all;
         if (!instance) return;
 
         const layout = TileMap.layout;

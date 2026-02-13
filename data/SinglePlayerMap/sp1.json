@@ -8160,13 +8160,13 @@
       "scaleY": 0.3721923828125
     },
     {
-      "animId": "accelerator",
+      "animId": "AcceleratorSingle",
       "posX": 942.7,
       "posY": 586.55,
       "depth": 1955
     },
     {
-      "animId": "accelerator",
+      "animId": "AcceleratorSingle",
       "posX": 890.7,
       "posY": 637.55,
       "depth": 1954
@@ -8180,7 +8180,7 @@
       "scaleY": 0.3721923828125
     },
     {
-      "animId": "accelerator",
+      "animId": "AcceleratorSingle",
       "posX": 833.7,
       "posY": 690.549,
       "depth": 1952
@@ -9709,25 +9709,25 @@
       "depth": 1703
     },
     {
-      "animId": "accelerator",
+      "animId": "AcceleratorSingle",
       "posX": 25274.6,
       "posY": 481.15,
       "depth": 1702
     },
     {
-      "animId": "accelerator",
+      "animId": "AcceleratorSingle",
       "posX": 25221.85,
       "posY": 481.15,
       "depth": 1701
     },
     {
-      "animId": "accelerator",
+      "animId": "AcceleratorSingle",
       "posX": 25169.15,
       "posY": 481.15,
       "depth": 1700
     },
     {
-      "animId": "accelerator",
+      "animId": "AcceleratorSingle",
       "posX": 25116.4,
       "posY": 481.15,
       "depth": 1699
@@ -17390,13 +17390,13 @@
       "depth": 427
     },
     {
-      "animId": "accelerator",
+      "animId": "AcceleratorSingle",
       "posX": 889.7,
       "posY": 537.55,
       "depth": 426
     },
     {
-      "animId": "accelerator",
+      "animId": "AcceleratorSingle",
       "posX": 839.65,
       "posY": 487.5,
       "depth": 425
@@ -17434,13 +17434,13 @@
       "scaleY": 0.3721923828125
     },
     {
-      "animId": "accelerator",
+      "animId": "AcceleratorSingle",
       "posX": 1150.75,
       "posY": 586.55,
       "depth": 420
     },
     {
-      "animId": "accelerator",
+      "animId": "AcceleratorSingle",
       "posX": 1098.75,
       "posY": 637.55,
       "depth": 419
@@ -17454,19 +17454,19 @@
       "scaleY": 0.3721923828125
     },
     {
-      "animId": "accelerator",
+      "animId": "AcceleratorSingle",
       "posX": 1041.75,
       "posY": 690.549,
       "depth": 417
     },
     {
-      "animId": "accelerator",
+      "animId": "AcceleratorSingle",
       "posX": 1097.75,
       "posY": 537.55,
       "depth": 416
     },
     {
-      "animId": "accelerator",
+      "animId": "AcceleratorSingle",
       "posX": 1047.7,
       "posY": 487.5,
       "depth": 415
