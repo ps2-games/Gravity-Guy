@@ -1,9 +1,8 @@
-import { ASSETS_PATH, SCREEN_HEIGHT, SCREEN_WIDTH } from "../../shared/constants.js";
+import { ASSETS_PATH, GAME_GROUND_LEVEL, GAME_SCALE_FACTOR, SCREEN_HEIGHT, FLASH_HEIGHT } from "../../shared/constants.js";
 
 export default class TileMapRenderer {
     constructor(mapDataArray) {
-        this.FLASH_HEIGHT = 480;
-        this.scaleY = SCREEN_HEIGHT / this.FLASH_HEIGHT;
+        this.scaleY = SCREEN_HEIGHT / FLASH_HEIGHT;
         this.cameraX = 0;
         this.cameraY = 0;
 
@@ -79,8 +78,6 @@ export default class TileMapRenderer {
     }
 
     _prepareLayerSprites(visualInfo) {
-        const GROUND_LEVEL = 425;
-        const SCALE_FACTOR = 0.641509;
         const Y_OFFSET = 36;
         const PS2_Y_OFFSET = SCREEN_HEIGHT === 448 ? 30 : 0;
 
@@ -92,12 +89,12 @@ export default class TileMapRenderer {
 
             const { config, textureIndex } = res;
 
-            const convertedX = v.posX * SCALE_FACTOR;
-            const flashY = GROUND_LEVEL - (v.posY * SCALE_FACTOR) + Y_OFFSET;
+            const convertedX = v.posX * GAME_SCALE_FACTOR;
+            const flashY = GAME_GROUND_LEVEL - (v.posY * GAME_SCALE_FACTOR) + Y_OFFSET;
             const convertedY = (flashY * this.scaleY) + PS2_Y_OFFSET;
 
-            const trimX = (config.spriteSourceSize.x || 0) * SCALE_FACTOR;
-            const trimY = (config.spriteSourceSize.y || 0) * SCALE_FACTOR;
+            const trimX = (config.spriteSourceSize.x || 0) * GAME_SCALE_FACTOR;
+            const trimY = (config.spriteSourceSize.y || 0) * GAME_SCALE_FACTOR;
 
             spritesByTexture[textureIndex].push({
                 x: convertedX + trimX,
